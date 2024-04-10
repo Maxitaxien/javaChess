@@ -1,0 +1,28 @@
+Chess structure:
+
+inf101.chess.pieces
+	Piece (ABC)
+	Pawn
+	Bishop
+	Knight
+	Rook
+	Queen
+	King
+inf101.grid
+	ChessMove (extends move)
+	Otherwise same as before
+inf101.sem2
+	Same as before
+inf101.sem2.game
+	ChessGraphics
+	Maybe some changes to multimovegame/new class that extends it
+	Otherwise same as before
+inf101.sem2.game.games
+	add Chess.java
+inf101.sem2.GUI
+	add instructions/rules button
+
+Can't see the need for more classes in the other packages as of yet
+
+Inspiration:
+https://www.geeksforgeeks.org/design-a-chess-game/

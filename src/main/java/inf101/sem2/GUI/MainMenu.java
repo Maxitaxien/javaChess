@@ -118,7 +118,6 @@ public class MainMenu implements ActionListener {
 		}
 		if (e.getSource() == chessButton) {
 			game = new Chess(graphics, players);
-			// game = new Chess(graphics, players);
 		}
 		if (game == null) {
 			System.err.println("Button not recognized, no game created.");
@@ -146,11 +145,47 @@ public class MainMenu implements ActionListener {
 			players.add(new GuiPlayer(s2));
 		} else {
 			// make AI
-			// TODO: prompt for level of intelligence in AI player
-			players.add(new AlphaBetaPlayer(s2, 5));
-			// players.add(new DumbPlayer('O'));
+			int intelligence = promptIntelligence();
+			players.add(new AlphaBetaPlayer(s2, intelligence));
 		}
 		return players;
+	}
+	
+	/**
+	 * Prompts player for level of intelligence in AI player
+	 * Credit: ChatGPT
+	 * @return the selected intelligence level (an integer between 1 and 8)
+	 */
+	private static int promptIntelligence() {
+	    String userInput;
+	    int intelligenceLevel = 0;
+
+	    do {
+	        userInput = JOptionPane.showInputDialog(
+	                null,
+	                "Select the intelligence level of the AI (1-8):",
+	                "AI Intelligence Level",
+	                JOptionPane.PLAIN_MESSAGE);
+
+	        try {
+	            intelligenceLevel = Integer.parseInt(userInput);
+	            if (intelligenceLevel < 1 || intelligenceLevel > 8) {
+	                JOptionPane.showMessageDialog(
+	                        null,
+	                        "Please enter a number between 1 and 8.",
+	                        "Invalid Input",
+	                        JOptionPane.ERROR_MESSAGE);
+	            }
+	        } catch (NumberFormatException e) {
+	            JOptionPane.showMessageDialog(
+	                    null,
+	                    "Please enter a valid integer between 1 and 8.",
+	                    "Invalid Input",
+	                    JOptionPane.ERROR_MESSAGE);
+	        }
+	    } while (intelligenceLevel < 1 || intelligenceLevel > 8);
+
+	    return intelligenceLevel;
 	}
 
 	/**

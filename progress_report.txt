@@ -1,2 +1,12 @@
 08.04: Downloaded and started understanding code. Added chess button along with others.
 TODO: Change player names in selection. Create chess pieces to populate board. 
+
+08.04: Created board and basic outline of game.
+TODO: Change board square colours. Create chess pieces to populate board. Method to flip board?
+
+09.04:
+TODO: Find out where logic for calculating legal moves should be done. We need positions of all pieces to do this.
+
+10. 04: Added some pieces without functionality, created ChessMoveGame to adapt MultiMoveGame
+TODO: Maybe make multimovegame abstract so that it also works with ChessMove
+Allow player to start with white or black.
