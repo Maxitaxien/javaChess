@@ -1,20 +1,16 @@
 package inf101.sem2.game;
 
-import java.util.Objects;
-
 import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.grid.Move;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
 
 /**
  * A class which is essentially a modification of
  * MultiMoveGame to work with chess. 
  * Most of the code is therefore similar.
  */
-public abstract class ChessMoveGame extends ChessGame<ChessMove>{
+public abstract class ChessMoveGame extends ChessGame{
 
 	public ChessMoveGame(ChessBoard board, ChessGraphics graphics) {
 		super(board, graphics);

@@ -2,11 +2,10 @@ package inf101.sem2.game;
 
 import java.util.List;
 
+import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
 import inf101.sem2.terminal.ChessPlayerList;
-import inf101.sem2.terminal.PlayerList;
 
 /**
  * This class models turn based games where each round the current player gets
@@ -18,7 +17,7 @@ import inf101.sem2.terminal.PlayerList;
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-public abstract class ChessGame<MoveType> {
+public abstract class ChessGame {
 
 	/**
 	 * Number of miliseconds between each move.
@@ -57,6 +56,7 @@ public abstract class ChessGame<MoveType> {
 	public void run() {
 		// game loop
 		while (!gameOver()) {
+			System.out.println("1");
 			try {
 				displayPlayerTurn();
 				// If player has no valid moves, skip to next player
@@ -66,11 +66,13 @@ public abstract class ChessGame<MoveType> {
 				}
 
 				// Get move from player and execute if valid
-				MoveType move = getCurrentPlayer().getMove(copy());
+				ChessMove move = getCurrentPlayer().getMove(copy());
 				if (validMove(move)) {
+					System.out.println("valid");
 					makeMove(move);
 					players.nextPlayer();
 				} else {
+					System.out.println("invalid");
 					graphics.displayMessage("That is an invalid move");
 				}
 			} catch (IllegalArgumentException e) {
@@ -93,7 +95,7 @@ public abstract class ChessGame<MoveType> {
 	 * When players are asked to make a move we don't want them to change the
 	 * state of the game so we send them a copy of the game.
 	 */
-	public abstract ChessGame<MoveType> copy();
+	public abstract ChessGame copy();
 
 	/**
 	 * Create copy of game object, but with a non working graphics object.
@@ -101,9 +103,9 @@ public abstract class ChessGame<MoveType> {
 	 * 
 	 * @return copy of game with fake graphics
 	 */
-	public ChessGame<MoveType> copyGameWithoutGraphics() {
+	public ChessGame copyGameWithoutGraphics() {
 		ChessDummyGraphics fakeGraphics = new ChessDummyGraphics();
-		ChessGame<MoveType> gameCopy = copy();
+		ChessGame gameCopy = copy();
 		gameCopy.graphics = fakeGraphics;
 		return gameCopy;
 	}
@@ -115,7 +117,7 @@ public abstract class ChessGame<MoveType> {
 	 * 
 	 * @param target
 	 */
-	protected void copyTo(ChessGame<MoveType> target) {
+	protected void copyTo(ChessGame target) {
 		target.board = board.copy();
 		target.graphics = graphics;
 		target.players = players.copy();
@@ -127,7 +129,7 @@ public abstract class ChessGame<MoveType> {
 	 *
 	 * @param loc
 	 */
-	public abstract void makeMove(MoveType move);
+	public abstract void makeMove(ChessMove move);
 
 
 	/**
@@ -138,7 +140,7 @@ public abstract class ChessGame<MoveType> {
 	 * @param move
 	 * @return true if valid move. False if not.
 	 */
-	public abstract boolean validMove(MoveType move);
+	public abstract boolean validMove(ChessMove move);
 
 	/**
 	 * Adds a player to the game.
@@ -254,7 +256,7 @@ public abstract class ChessGame<MoveType> {
 		players.setCurrentPlayer(player);
 	}
 
-	public abstract List<MoveType> getPossibleMoves();
+	public abstract List<ChessMove> getPossibleMoves();
 
 	public ChessGraphics getGraphics() {
 		return graphics;

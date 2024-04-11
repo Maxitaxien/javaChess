@@ -1,5 +1,6 @@
 package inf101.sem2.player;
 
+import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.grid.Move;
 import inf101.sem2.game.ChessGame;
@@ -39,6 +40,6 @@ public interface ChessPlayer {
 	 * @param game - The grid based game in which the move is to be made.
 	 * @return a move describing what locations the player should traverse
 	 */
-	<T> T getMove(ChessGame<T> board);
+	ChessMove getMove(ChessGame board);
 
 }

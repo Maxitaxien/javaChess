@@ -2,17 +2,12 @@ package inf101.sem2.player;
 
 import javax.swing.JOptionPane;
 
+import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.grid.Move;
 import inf101.sem2.GUI.ChessGUI;
-import inf101.sem2.GUI.GameGUI;
 import inf101.sem2.game.ChessGame;
 import inf101.sem2.game.ChessMoveGame;
-import inf101.sem2.game.Game;
-import inf101.sem2.game.MultiMoveGame;
-import inf101.sem2.game.SingleMoveGame;
-
 /**
  * This Player should be used if one wants input from GUI.
  * The game loop will stop when reaching an instance of GuiPlayer
@@ -31,35 +26,48 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	}
 
 	@Override
-	public <T> T getMove(ChessGame<T> game) {
-		ChessGUI gui;
-		try {
-			gui = (ChessGUI) game.getGraphics();
-		} catch (Exception e1) {
-			throw new IllegalArgumentException("GuiPlayer can not play without a GUI");
-		}
+	public ChessMove getMove(ChessGame game) {
+	    ChessGUI gui;
+	    try {
+	        gui = (ChessGUI) game.getGraphics();
+	    } catch (Exception e1) {
+	        throw new IllegalArgumentException("GuiPlayer can not play without a GUI");
+	    }
 
-		game.displayBoard();
+	    game.displayBoard();
 
-		while (true) {
-			Location loc = gui.getLocation();
-			if (game.canPlace(loc)) {
-				return (T) loc;
-			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				System.err.println("Sleep interrupted");
-			}
+	    while (true) {
+	    	System.out.println("Getting move.");
+	        Location from = gui.getFrom();
+	        Location to = gui.getTo();
+	        
+	        if (from == null || to == null) {
+	        	continue;
+	        }
+	        
+	        Piece piece = game.getGameBoard().get(from);
+	        
+	        ChessMove move = new ChessMove(from, to, piece);
+	        
+	        if (game.validMove(move)) {
+	        	System.out.println("Valid move found.");
+	            return move;
+	        }
+	        
+	        try {
+	            Thread.sleep(100);
+	        } catch (InterruptedException e) {
+	            System.err.println("Sleep interrupted");
+	        }
 
-			if (gui.wantRestart) {
-				throw new RestartException();
-			}
+	        if (gui.wantRestart) {
+	            throw new RestartException();
+	        }
 
-			if (gui.ended) {
-				throw new GameEndedException();
-			}
-		}
+	        if (gui.ended) {
+	            throw new GameEndedException();
+	        }
+	    }
 	}
 
 	private boolean hasValidMove(ChessMoveGame game, ChessMove move) {

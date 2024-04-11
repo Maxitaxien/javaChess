@@ -36,10 +36,10 @@ public class Pawn extends Piece {
 		int currentCol = this.getLocation().col;
 		
 		if (getColour() == 'W') {
-			legalMoves.add(new Location(currentRow - 1, currentCol));
+			legalMoves.add(new Location(currentRow + 1, currentCol));
 		}
 		else {
-			legalMoves.add(new Location(currentRow + 1, currentCol));
+			legalMoves.add(new Location(currentRow - 1, currentCol));
 		}
 		return legalMoves;
 	}

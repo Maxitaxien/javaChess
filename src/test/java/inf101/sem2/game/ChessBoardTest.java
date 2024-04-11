@@ -78,7 +78,7 @@ class ChessBoardTest {
 
 	@Test
 	void testCopy() {
-		GameBoard newBoard = board.copy();
+		ChessBoard newBoard = board.copy();
 		for(Location loc : board.locations()) {
 			assertEquals(board.get(loc), newBoard.get(loc));
 		}
@@ -94,10 +94,10 @@ class ChessBoardTest {
 
 			switch (r) {
 				case 1 -> {
-					board.setPiece(loc, p1);
+					board.setPiece(loc, new Pawn('W', loc));
 					numP1++;
 				}
-				case 2 -> board.setPiece(loc, p2);
+				case 2 -> board.setPiece(loc, new Pawn('B', loc));
 			}
 		}
 		String s = board.toString();

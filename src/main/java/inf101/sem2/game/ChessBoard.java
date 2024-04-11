@@ -46,7 +46,12 @@ public class ChessBoard {
 	}
 	
 	public char getPlayerChar(Location loc) {
-		return grid.get(loc).getColour();
+		Piece piece = get(loc);
+		if (piece == null) {
+			return ' ';
+		} else {
+			return piece.getColour();
+		}
 	}
 
 	public int numColumns() {
@@ -83,6 +88,7 @@ public class ChessBoard {
 		} else if (isEmpty(to) || piece.getColour() != getPlayerChar(to)) {
 			grid.set(from, null);
 			grid.set(to, piece);
+			piece.movePiece(to);
 			char pieceType = piece.getSymbol();
 			if (pieceType == 'P' || pieceType == 'R' || pieceType == 'K') {
 				piece.moved();
