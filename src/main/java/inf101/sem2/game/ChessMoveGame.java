@@ -6,6 +6,7 @@ import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.grid.Move;
+import inf101.sem2.player.ChessPlayer;
 import inf101.sem2.player.Player;
 
 /**
@@ -13,13 +14,13 @@ import inf101.sem2.player.Player;
  * MultiMoveGame to work with chess. 
  * Most of the code is therefore similar.
  */
-public abstract class ChessMoveGame extends Game<ChessMove>{
+public abstract class ChessMoveGame extends ChessGame<ChessMove>{
 
-	public ChessMoveGame(GameBoard board, Graphics graphics) {
+	public ChessMoveGame(ChessBoard board, ChessGraphics graphics) {
 		super(board, graphics);
 	}
 	
-	public ChessMoveGame(GameBoard board, Graphics graphics, Iterable<Player> players) {
+	public ChessMoveGame(ChessBoard board, ChessGraphics graphics, Iterable<ChessPlayer> players) {
 		super(board, graphics, players);
 	}
 	
@@ -39,8 +40,9 @@ public abstract class ChessMoveGame extends Game<ChessMove>{
 		
 		// Check that piece in first location is the players piece
 		Location from = move.getFrom();
-		if (!Objects.equals(board.get(from), getCurrentPlayer()))
+		if (!(board.getPlayerChar(from) == getCurrentPlayer().getSymbol())) {
 			return false;
+		}
 		
 		// Check that the move is legal for the piece (that it can move to this square)
 		if (!toMove.getLegalMoves(board).contains(move.getTo())) {
@@ -49,7 +51,7 @@ public abstract class ChessMoveGame extends Game<ChessMove>{
 
 		
 		Location to = move.getTo();
-		if (!board.canPlace(to))
+		if (!board.isEmpty(to))
 			return false;
 		
 		return true;
@@ -68,16 +70,6 @@ public abstract class ChessMoveGame extends Game<ChessMove>{
 			throw new IllegalArgumentException("Cannot make move:\n" + move);
 
 		board.movePiece(move.getFrom(), move.getTo());
-	}
-	
-	// TODO: Determine if this is even needed.
-	public void makeCapture(ChessMove move) {
-		if (!validMove(move))
-			throw new IllegalArgumentException("Cannot make move:\n" + move);
-
-		board.movePiece(move.getFrom(), move.getTo());
-		// Adapt this to work with individual pieces
-		board.swap(move.getTo(), getCurrentPlayer());
 	}
 	
 	

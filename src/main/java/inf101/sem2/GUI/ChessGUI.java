@@ -22,8 +22,10 @@ import javax.swing.WindowConstants;
 import inf101.grid.Location;
 import inf101.grid.Move;
 import inf101.sem2.game.ChessBoard;
+import inf101.sem2.game.ChessGraphics;
 import inf101.sem2.game.GameBoard;
 import inf101.sem2.game.Graphics;
+import inf101.sem2.player.ChessPlayer;
 import inf101.sem2.player.Player;
 
 /**
@@ -33,19 +35,19 @@ import inf101.sem2.player.Player;
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-public class GameGUI implements ActionListener, Graphics {
+public class ChessGUI implements ActionListener, ChessGraphics {
 
 	private JButton backButton; // Button to go back to end the game and go back to main menu
 	private JButton restartButton; // Button to restart the game
 	private JLabel statusMessage; // field for displaying message to user
-	private ClickableGrid board; // clickable grid for user input
-	private Iterable<Player> players;
+	private ClickableChessGrid board; // clickable grid for user input
+	private Iterable<ChessPlayer> players;
 	private JFrame frame;
 
 	public boolean wantRestart = false;
 	public boolean ended = false;
 
-	public GameGUI(Iterable<Player> players) {
+	public ChessGUI(Iterable<ChessPlayer> players) {
 		this.players = players;
 		JPanel buttons = createButtonPanel();
 		statusMessage = new JLabel();
@@ -130,17 +132,7 @@ public class GameGUI implements ActionListener, Graphics {
 	public void displayMessage(String message) {
 		statusMessage.setText(message);
 	}
-
-	@Override
-	public void display(GameBoard board) {
-		// remake the game board in case the number of rows or columns has changed
-		removeClickablePanels();
-		this.board = new ClickableGrid(board, players, getColors());
-		frame.add("Center", this.board);
-		frame.setMinimumSize(new Dimension(100 * board.numColumns(), 100 * board.numRows() + 100));
-		drawGameBoard();
-	}
-
+	
 	/**
 	 * This method reports the last grid cell that was clicked by the user.
 	 * 
@@ -170,8 +162,17 @@ public class GameGUI implements ActionListener, Graphics {
 	 *         piece
 	 */
 	protected List<Color> getColors() {
-		Color[] colors = { Color.BLUE, Color.RED };
+		Color[] colors = { Color.WHITE, Color.BLACK };
 		return Arrays.asList(colors);
 	}
+
+	public void display(ChessBoard gameBoard) {
+		// TODO Auto-generated method stub
+		removeClickablePanels();
+		this.board = new ClickableChessGrid(gameBoard, players, getColors());
+		frame.add("Center", this.board);
+		frame.setMinimumSize(new Dimension(100 * gameBoard.numColumns(), 100 * gameBoard.numRows() + 100));
+		drawGameBoard();
 		
+	}
 }

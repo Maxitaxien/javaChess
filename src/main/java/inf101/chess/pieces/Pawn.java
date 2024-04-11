@@ -1,10 +1,10 @@
 package inf101.chess.pieces;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import inf101.grid.Location;
-import inf101.grid.Move;
-import inf101.sem2.game.GameBoard;
+import inf101.sem2.game.ChessBoard;
 
 public class Pawn extends Piece {
 	private boolean hasMoved = false;
@@ -23,13 +23,24 @@ public class Pawn extends Piece {
 	public boolean hasMoved() {
 		return hasMoved;
 	}
+	
+	public void moved() {
+		hasMoved = true;
+	}
 
 	// TODO: Implement
 	@Override
-	public List<Location> getLegalMoves(GameBoard board) {
-		return null;
+	public List<Location> getLegalMoves(ChessBoard board) {
+		List<Location> legalMoves = new ArrayList<>();
+		int currentRow = this.getLocation().row;
+		int currentCol = this.getLocation().col;
+		
+		if (getColour() == 'W') {
+			legalMoves.add(new Location(currentRow - 1, currentCol));
+		}
+		else {
+			legalMoves.add(new Location(currentRow + 1, currentCol));
+		}
+		return legalMoves;
 	}
-
-
-
 }

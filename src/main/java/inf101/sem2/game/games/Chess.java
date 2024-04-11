@@ -2,18 +2,16 @@ package inf101.sem2.game.games;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import inf101.grid.ChessMove;
-import inf101.grid.GridDirection;
 import inf101.grid.Location;
-import inf101.grid.Move;
 import inf101.sem2.game.ChessMoveGame;
-import inf101.sem2.game.Game;
-import inf101.sem2.game.GameBoard;
+import inf101.sem2.game.ChessBoard;
+import inf101.sem2.game.ChessGraphics;
 import inf101.sem2.game.Graphics;
-import inf101.sem2.game.MultiMoveGame;
+import inf101.sem2.player.ChessPlayer;
 import inf101.sem2.player.Player;
+import inf101.chess.pieces.*;
 
 public class Chess extends ChessMoveGame {
 	
@@ -21,15 +19,15 @@ public class Chess extends ChessMoveGame {
 	 * Initializing chess much in the same way as Othello.
 	 * Credit for this part of the code goes to the creator of Othello.java
 	 */
-	public Chess(Graphics graphics, Player p1, Player p2) {
-		super(new GameBoard(8, 8), graphics);
+	public Chess(ChessGraphics graphics, ChessPlayer p1, ChessPlayer p2) {
+		super(new ChessBoard(8, 8), graphics);
 		addPlayer(p1);
 		addPlayer(p2);
 		initializeBoard();
 	}
 	
-	public Chess(Graphics graphics, Iterable<Player> players) {
-		super(new GameBoard(8, 8), graphics, players);
+	public Chess(ChessGraphics graphics, Iterable<ChessPlayer> players) {
+		super(new ChessBoard(8, 8), graphics, players);
 		initializeBoard();
 	}
 	
@@ -38,7 +36,8 @@ public class Chess extends ChessMoveGame {
 		// Currently dummy characters to represent colour
 		for (int row = 0; row < 2; row++) {
 			for (int col = 0; col < board.numColumns(); col++) {
-				board.set(new Location(row, col), getCurrentPlayer());
+				Location loc = new Location(row, col);
+				board.setPiece(loc, new Pawn('W', loc));
 			}
 		}
 		
@@ -46,7 +45,8 @@ public class Chess extends ChessMoveGame {
 		
 		for (int row = board.numRows() - 1; row > board.numRows() - 3; row--) {
 			for (int col = 0; col < board.numColumns(); col++) {
-				board.set(new Location(row, col), getCurrentPlayer());
+				Location loc = new Location(row, col);
+				board.setPiece(loc, new Pawn('B', loc));
 			}
 		}
 		
@@ -72,34 +72,28 @@ public class Chess extends ChessMoveGame {
 	}
 	
 	/**
-	 * Inspired by the equivalent method in BlobWars
-	 * TODO: Call pieces individual methods
+	 * PUT THIS IN OVERRIDDEN
+	 * Look through grid. When we find a piece, calculate it's 
+	 * legal moves. 
+	 * TODO: Make this behave differently when in check
 	 */
 	@Override
     public List<ChessMove> getPossibleMoves() {
         List<ChessMove> possibleMoves = new ArrayList<>();
-        for (Piece piece: board.)
-
-        for (Location to : board.locations()) {
-            if (!board.canPlace(to))
-                continue;
-   
-            Location from = null;
-            for (Location neighbour : board.getNeighborhood(to)) {
-                if (Objects.equals(board.get(neighbour), getCurrentPlayer())) {
-                    from = neighbour;
-                    break;
-                }
-            }
-            if (from != null) {
-                oneMoveLocations.add(from);
-                possibleMoves.add(new ChessMove(from, to));
-                continue;
-            }
+        for (Location from: board.locations()) {
+        	if (board.get(from) != null) {
+        		List<Location> moveTo = board.get(from).getLegalMoves(board);
+        		
+        		for (Location to : moveTo) {
+        			ChessMove move = new ChessMove(from, to, board.get(from));
+        			possibleMoves.add(move);
+        		}
+        	}
         }
         return possibleMoves;
 	}
 	
+	// TODO: Fix this method
 	public List<Location> getPossibleLocations(Location loc) {
 	    return board.getNeighborhood(loc, 1);
 	}
@@ -112,7 +106,7 @@ public class Chess extends ChessMoveGame {
 		}
 
 	@Override
-	public boolean isWinner(Player player) {
+	public boolean isWinner(ChessPlayer player) {
 		// TODO 
 		return false;
 	}

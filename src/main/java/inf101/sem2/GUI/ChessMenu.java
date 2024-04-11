@@ -16,16 +16,19 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import inf101.sem2.game.ChessGame;
 import inf101.sem2.game.Game;
 import inf101.sem2.game.games.BlobWars;
 import inf101.sem2.game.games.ConnectFour;
 import inf101.sem2.game.games.Othello;
 import inf101.sem2.game.games.TicTacToe;
 import inf101.sem2.game.games.Chess;
+import inf101.sem2.player.ChessPlayer;
 import inf101.sem2.player.GameEndedException;
-import inf101.sem2.player.GuiPlayer;
+import inf101.sem2.player.ChessGUIPlayer;
 import inf101.sem2.player.Player;
 import inf101.sem2.player.RestartException;
+import inf101.sem2.player.ai.AlphaBetaChessPlayer;
 import inf101.sem2.player.ai.AlphaBetaPlayer;
 import inf101.sem2.player.ai.DumbPlayer;
 
@@ -34,18 +37,14 @@ import inf101.sem2.player.ai.DumbPlayer;
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-public class MainMenu implements ActionListener {
-
-	private final JButton playConnectFourButton; // Button to start new 4 in row game
-	private final JButton playTicTacToeButton; // Button to start new TicTacToe game
-	private final JButton playOthelloButton; // Button to start new Othello game
-	private final JButton blobWarsButton; // Button to start new BlobWars game
+public class ChessMenu implements ActionListener {
+	private final JButton startButton; // BUtton to start new Chess game
 	private final JFrame frame;
-	public Game<?> game;
-	public GameGUI gui;
+	public Chess game;
+	public ChessGUI gui;
 	boolean start;
 
-	public MainMenu() {
+	public ChessMenu() {
 		// make new main window for the game
 		frame = new JFrame();
 		frame.setTitle("Game menu");
@@ -55,12 +54,8 @@ public class MainMenu implements ActionListener {
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 		buttons.setBorder(new EmptyBorder(10, 10, 30, 10));
 
-		// add one button for each game
-		playTicTacToeButton = addButton(buttons, "Tic-Tac-Toe");
-		playConnectFourButton = addButton(buttons, "Connect Four");
-		playOthelloButton = addButton(buttons, "Othello");
-		blobWarsButton = addButton(buttons, "Blob Wars");
-		
+		startButton = addButton(buttons, "Chess");
+
 		// add buttons to the window
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(buttons);
@@ -89,27 +84,22 @@ public class MainMenu implements ActionListener {
 
 	// this method is inherited from ActionListener and is the method
 	// that gets called when buttons are clicked.
+	// TODO: Add settings button below chess button
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (game != null) {
 			System.err.println("Game is in progress, only one game at the time is possible.");
 			return;
 		}
+		
+		char s1 = 'W';
+		char s2 = 'B';
 				
-		Iterable<Player> players = getPlayers('X', 'O');
-		GameGUI graphics = new GameGUI(players);
-
-		if (e.getSource() == playConnectFourButton) {
-			game = new ConnectFour(graphics, players);
-		}
-		if (e.getSource() == playTicTacToeButton) {
-			game = new TicTacToe(graphics, players);
-		}
-		if (e.getSource() == playOthelloButton) {
-			game = new Othello(graphics, players);
-		}
-		if (e.getSource() == blobWarsButton) {
-			game = new BlobWars(graphics, players);
+		Iterable<ChessPlayer> players = getPlayers(s1, s2);
+		ChessGUI graphics = new ChessGUI(players);
+		
+		if (e.getSource() == startButton) {
+			game = new Chess(graphics, players);
 		}
 		if (game == null) {
 			System.err.println("Button not recognized, no game created.");
@@ -127,18 +117,18 @@ public class MainMenu implements ActionListener {
 	 *
 	 * @return an Iterable of 2 Players
 	 */
-	public static Iterable<Player> getPlayers(char s1, char s2) {
-		List<Player> players = new ArrayList<>();
+	public static Iterable<ChessPlayer> getPlayers(char s1, char s2) {
+		List<ChessPlayer> players = new ArrayList<>();
 		// add player1
-		players.add(new GuiPlayer(s1));
+		players.add(new ChessGUIPlayer(s1));
 
 		// add player2
 		if (promptMultiplayer()) {
-			players.add(new GuiPlayer(s2));
+			players.add(new ChessGUIPlayer(s2));
 		} else {
 			// make AI
 			int intelligence = promptIntelligence();
-			players.add(new AlphaBetaPlayer(s2, intelligence));
+			players.add(new AlphaBetaChessPlayer(s2, intelligence));
 		}
 		return players;
 	}

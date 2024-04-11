@@ -11,5 +11,4 @@ public class DummyGraphics implements Graphics {
     public void display(GameBoard board) {
         // Do nothing
     }
-
 }

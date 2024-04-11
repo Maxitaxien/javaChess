@@ -10,3 +10,8 @@ TODO: Find out where logic for calculating legal moves should be done. We need p
 10. 04: Added some pieces without functionality, created ChessMoveGame to adapt MultiMoveGame
 TODO: Maybe make multimovegame abstract so that it also works with ChessMove
 Allow player to start with white or black.
+
+11.04:
+The AbstractPlayer currently only allows for one symbol - corresponding to the player.
+TODO: Find the best place to handle this such that we can draw different pieces.
+TODO: Choose and commit to one choice - are positions handled in pieces or board class?

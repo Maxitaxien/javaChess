@@ -2,23 +2,28 @@ package inf101.sem2.game;
 
 import java.util.List;
 
+import inf101.chess.pieces.Piece;
 import inf101.grid.Grid;
 import inf101.grid.GridDirection;
 import inf101.grid.GridLocationIterator;
 import inf101.grid.Location;
-import inf101.sem2.player.Player;
 
-public class GameBoard {
+/**
+ * A class for a ChessBoard to represent pieces.
+ * Adapted from GameBoard to work with chess.
+ * The code is therefore heavily inspired by GameBoard.
+ */
+public class ChessBoard {
 
-	private Grid<Player> grid;
+	private Grid<Piece> grid;
 
-	public GameBoard(int rows, int cols) {
+	public ChessBoard(int rows, int cols) {
 		grid = new Grid<>(rows, cols);
 	}
 
-	public void set(Location loc, Player elem) {
-		if (canPlace(loc)) {
-			grid.set(loc, elem);
+	public void setPiece(Location loc, Piece piece) {
+		if (isEmpty(loc)) {
+			grid.set(loc, piece);
 		} else {
 			System.err.println("Can not place at " + loc + ".");
 		}
@@ -27,16 +32,21 @@ public class GameBoard {
 
 	/**
 	 * Place new piece at location even if there is already another piece there.
+	 * This essentially represents a piece capture.
 	 * 
 	 * @param loc
 	 * @param elem
 	 */
-	public void swap(Location loc, Player elem) {
-		grid.set(loc, elem);
+	public void swap(Location loc, Piece piece) {
+		grid.set(loc, piece);
 	}
 
-	public Player get(Location loc) {
+	public Piece get(Location loc) {
 		return grid.get(loc);
+	}
+	
+	public char getPlayerChar(Location loc) {
+		return grid.get(loc).getColour();
 	}
 
 	public int numColumns() {
@@ -48,17 +58,11 @@ public class GameBoard {
 	}
 
 	/**
-	 * This method determines whether or not it is allowed to place on a given
-	 * location.
-	 * This method does not consider the rules of the game just whether the space on
-	 * the gameBoard
-	 * is available.
-	 * <p>
-	 * This implementation only allows for one piece in each square of the board.
-	 *
-	 * @return If the given location is empty
+	 * Method to determine if something exists on a given square
+	 * @param loc the location to check
+	 * @return true if the given location is empty
 	 */
-	public boolean canPlace(Location loc) {
+	public boolean isEmpty(Location loc) {
 		try {
 			return grid.get(loc) == null;
 		} catch (Exception e) {
@@ -67,22 +71,27 @@ public class GameBoard {
 	}
 
 	/**
-	 * Move piece at location <code>from</code> to location <code>to</code>.
+	 * Move piece at location from to location to
 	 * 
 	 * @param from
 	 * @param to
 	 */
 	public void movePiece(Location from, Location to) {
-		Player piece = grid.get(from);
+		Piece piece = grid.get(from);
 		if (piece == null) {
 			System.err.println("No piece at location: " + from + ".");
-		} else if (canPlace(to)) {
+		} else if (isEmpty(to) || piece.getColour() != getPlayerChar(to)) {
 			grid.set(from, null);
 			grid.set(to, piece);
+			char pieceType = piece.getSymbol();
+			if (pieceType == 'P' || pieceType == 'R' || pieceType == 'K') {
+				piece.moved();
+			}
 		} else {
 			System.err.println("Can not place at " + to + ".");
 		}
 	}
+	
 
 	@Override
 	public String toString() {
@@ -91,7 +100,7 @@ public class GameBoard {
 		for (int row = 0; row < grid.numRows(); row++) {
 			// print row
 			for (int col = 0; col < grid.numColumns(); col++) {
-				Player p = grid.get(new Location(row, col));
+				Piece p = grid.get(new Location(row, col));
 				if (p == null) {
 					s += ' ';
 				} else {
@@ -123,19 +132,19 @@ public class GameBoard {
 	/**
 	 * @return The maximum number of pieces in a row that the given player has.
 	 */
-	public int countNumInRow(Player p) {
+	public int countNumInRow(char playerChar) {
 		int max = 0;
 		for (Location loc : locations()) {
 			for (GridDirection dir : GridDirection.EIGHT_DIRECTIONS) {
-				max = Math.max(max, countNumInRow(p, loc, dir));
+				max = Math.max(max, countNumInRow(playerChar, loc, dir));
 			}
 		}
 		return max;
 	}
 
-	private int countNumInRow(Player p, Location start, GridDirection dir) {
+	private int countNumInRow(char playerChar, Location start, GridDirection dir) {
 		int count = 0;
-		while (grid.isOnGrid(start) && grid.get(start) == p) {
+		while (grid.isOnGrid(start) && getPlayerChar(start) == playerChar) {
 			count++;
 			start = start.getNeighbor(dir);
 		}
@@ -150,7 +159,7 @@ public class GameBoard {
 	 */
 	public boolean isFull() {
 		for (Location loc : locations()) {
-			if (canPlace(loc)) {
+			if (isEmpty(loc)) {
 				return false;
 			}
 		}
@@ -160,8 +169,8 @@ public class GameBoard {
 	/**
 	 * Makes a shallow copy of the board
 	 */
-	public GameBoard copy() {
-		GameBoard board = new GameBoard(grid.numRows(), grid.numColumns());
+	public ChessBoard copy() {
+		ChessBoard board = new ChessBoard(grid.numRows(), grid.numColumns());
 		grid.fillCopy(board.grid);
 		return board;
 	}
@@ -174,8 +183,8 @@ public class GameBoard {
 		grid.clear();
 	}
 
-	public void fill(Player element) {
-		grid.fill(element);
+	public void fill(Piece piece) {
+		grid.fill(piece);
 	}
 
 	public List<Location> getNeighborhood(Location loc) {
@@ -186,10 +195,10 @@ public class GameBoard {
 		return grid.getNeighbourhood(loc, dist);
 	}
 
-	public int countPieces(Player p) {
+	public int countPieces(char playerChar) {
 		int total = 0;
 		for (Location loc : locations()) {
-			if (p == get(loc)) {
+			if (playerChar == getPlayerChar(loc)) {
 				total++;
 			}
 		}

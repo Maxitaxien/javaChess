@@ -1,5 +1,6 @@
 package inf101.sem2.terminal;
 
+import inf101.sem2.game.ChessBoard;
 import inf101.sem2.game.GameBoard;
 import inf101.sem2.game.Graphics;
 

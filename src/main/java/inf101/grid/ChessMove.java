@@ -1,16 +1,14 @@
 package inf101.grid;
 
 import java.util.Iterator;
-import java.util.List;
-
 import inf101.chess.pieces.Piece;
 
 public class ChessMove extends Move {
 	private Piece piece;
 	private boolean capture;
 	
-	public ChessMove(List<Location> locations, Piece piece) {
-		super(locations);
+	public ChessMove(Location from, Location to, Piece piece) {
+		super(from, to);
 		this.piece = piece;
 	}
 	

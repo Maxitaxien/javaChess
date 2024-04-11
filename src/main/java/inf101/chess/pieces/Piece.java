@@ -3,8 +3,7 @@ package inf101.chess.pieces;
 import java.util.List;
 
 import inf101.grid.Location;
-import inf101.grid.Move;
-import inf101.sem2.game.GameBoard;
+import inf101.sem2.game.ChessBoard;
 
 public abstract class Piece {
 	private char colour;
@@ -45,10 +44,25 @@ public abstract class Piece {
 	}
 	
 	/**
+	 * Update the location of the piece on the board.
+	 */
+	public void movePiece(Location to) {
+		this.loc = to;
+		this.moved();
+	}
+	
+	/**
 	 * Calculates legal moves for the piece
 	 * at it's current position. Should be updated
 	 * for all pieces any time a move is made.
 	 * @return a list of possible locations the piece can move to
 	 */
-	public abstract List<Location> getLegalMoves(GameBoard board);
+	public abstract List<Location> getLegalMoves(ChessBoard board);
+
+	/**
+	 * Indicates that the piece has been moved.
+	 * Used in Pawn, Rook and King such that we know if they have been moved
+	 * (This is relevant for these pieces only)
+	 */
+	public abstract void moved();
 }

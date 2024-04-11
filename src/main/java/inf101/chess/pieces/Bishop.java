@@ -4,35 +4,23 @@ import java.util.List;
 
 import inf101.grid.Location;
 import inf101.grid.Move;
+import inf101.sem2.game.ChessBoard;
 
-public class Bishop implements IPiece{
-	private char colour;
-	private Location loc;
-	
+public class Bishop extends Piece{
 	public Bishop(char colour, Location loc) {
-		this.colour = colour;
-		this.loc = loc;
+		super(colour, 'B', loc);
 	}
 
 	@Override
-	public char getColour() {
-		return this.colour;
-	}
-
-	@Override
-	public Location getLocation() {
-		return this.loc;
-	}
-
-	@Override
-	public char getRepresentation() {
-		return 'B';
-	}
-
-	@Override
-	public List<Move> getLegalMoves() {
+	public List<Location> getLegalMoves(ChessBoard board) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void moved() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
