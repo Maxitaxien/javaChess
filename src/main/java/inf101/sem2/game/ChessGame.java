@@ -56,9 +56,9 @@ public abstract class ChessGame {
 	public void run() {
 		// game loop
 		while (!gameOver()) {
-			System.out.println("1");
 			try {
 				displayPlayerTurn();
+				// TODO: Use this to declare either stalemate or checkmate
 				// If player has no valid moves, skip to next player
 				if (getPossibleMoves().isEmpty()) {
 					players.nextPlayer();
@@ -68,11 +68,9 @@ public abstract class ChessGame {
 				// Get move from player and execute if valid
 				ChessMove move = getCurrentPlayer().getMove(copy());
 				if (validMove(move)) {
-					System.out.println("valid");
 					makeMove(move);
 					players.nextPlayer();
 				} else {
-					System.out.println("invalid");
 					graphics.displayMessage("That is an invalid move");
 				}
 			} catch (IllegalArgumentException e) {

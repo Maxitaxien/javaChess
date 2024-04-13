@@ -89,14 +89,17 @@ public class ClickableChessGrid extends JPanel {
 	/**
 	 * Should be called after a click to update the UI to reflect the current game
 	 * state
+	 * 
+	 * TODO: Set a colour to each board location that represents a background colour (fix this in ChessBoard)
 	 */
 	public void updateGui() {
-		for (Location loc : board.locations()) {
-			Color color = getColor(board.get(loc));
-			clickablePanels.get(loc).setColor(color);
-		}
-		validate();
-		repaint();
+	    for (Location loc : board.locations()) {
+	        GamePanel panel = clickablePanels.get(loc);
+	        Piece piece = board.get(loc); 
+	        panel.setPiece(piece);  
+	    }
+	    validate();
+	    repaint();
 	}
 
 	/**
@@ -115,14 +118,31 @@ public class ClickableChessGrid extends JPanel {
 	/**
 	 * Makes a grid of same size as the one in game and fills it with clickable
 	 * panels
+	 * For each panel, figure out which piece is there and draw the corresponding
+	 * image.
+	 * Draws every other square in alternating tile colours, until it hits a new row,
+	 * when it starts on the opposite colour of the last row.
+	 * 
 	 */
 	private void makeClickablePanels() {
-		for (Location loc : board.locations()) {
-			GamePanel pan = new GamePanel(adapter);
-			clickablePanels.set(loc, pan);
-			add(pan);
-		}
-		updateGui();
+	    int rowSize = board.numColumns();
+	    
+	    int rowCounter = 0;
+	    int colCounter = 0; 
+
+	    for (Location loc : board.locations()) {
+	        Color tileColour = ((rowCounter + colCounter) % 2 == 0) ? Color.white : Color.darkGray;
+	        GamePanel pan = new GamePanel(adapter, tileColour, board.get(loc));
+	        clickablePanels.set(loc, pan);
+	        add(pan);
+	        colCounter += 1;
+
+	        if (colCounter == rowSize) {
+	            colCounter = 0;
+	            rowCounter += 1; 
+	        }
+	    }
+	    updateGui();
 	}
 
 	public Location getLastClick() {

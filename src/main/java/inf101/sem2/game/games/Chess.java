@@ -32,43 +32,72 @@ public class Chess extends ChessMoveGame {
 	}
 	
 	private void initializeBoard() {
-		// TODO: Initialize chess pieces
-		// Currently dummy characters to represent colour
-		for (int row = 0; row < 2; row++) {
-			for (int col = 0; col < board.numColumns(); col++) {
+		int rows = board.numRows();
+		int cols = board.numColumns();
+		
+		// White pawns
+		for (int row = 1; row < 2; row++) {
+			for (int col = 0; col < cols; col++) {
 				Location loc = new Location(row, col);
 				board.setPiece(loc, new Pawn('W', loc));
 			}
 		}
 		
+		// White rooks
+		board.setPiece(new Location(0, 0), new Rook('W', new Location(0, 0)));
+		board.setPiece(new Location(0, cols - 1), new Rook('W', new Location(0, cols - 1)));
+		
+		// White knights
+		board.setPiece(new Location(0, 1), new Knight('W', new Location(0, 1)));
+		board.setPiece(new Location(0, cols - 2), new Knight('W', new Location(0, cols - 2)));
+		
+		// White bishops
+		board.setPiece(new Location(0, 2), new Bishop('W', new Location(0, 2)));
+		board.setPiece(new Location(0, cols - 3), new Bishop('W', new Location(0, cols - 3)));
+		
+		// White queen and king
+		board.setPiece(new Location(0, cols - 4), new Queen('W', new Location(0, cols - 4)));
+		board.setPiece(new Location(0, 3), new King('W', new Location(0, 3)));
+		
+		
 		players.nextPlayer();
 		
-		for (int row = board.numRows() - 1; row > board.numRows() - 3; row--) {
-			for (int col = 0; col < board.numColumns(); col++) {
+		// Black pawns
+		for (int row = rows - 2; row > rows - 3; row--) {
+			for (int col = 0; col < cols; col++) {
 				Location loc = new Location(row, col);
 				board.setPiece(loc, new Pawn('B', loc));
 			}
 		}
 		
+		// Black rooks
+		board.setPiece(new Location(rows - 1, 0), new Rook('B', new Location(rows - 1, 0)));
+		board.setPiece(new Location(rows - 1, cols - 1), new Rook('B', new Location(rows - 1, cols - 1)));
+				
+		// Black knights
+		board.setPiece(new Location(rows - 1, 1), new Knight('B', new Location(rows -1, 1)));
+		board.setPiece(new Location(rows - 1, cols - 2), new Knight('B', new Location(rows - 1, cols - 2)));
+				
+		// Black bishops
+		board.setPiece(new Location(rows -1, 2), new Bishop('B', new Location(rows - 1, 2)));
+		board.setPiece(new Location(rows - 1, cols - 3), new Bishop('B', new Location(rows - 1, cols - 3)));
+				
+		// White queen and king
+		board.setPiece(new Location(rows - 1, cols - 4), new Queen('B', new Location(rows - 1, cols - 4)));
+		board.setPiece(new Location(rows - 1, 3), new King('B', new Location(rows - 1, 3)));
+				
+				
+		
 		players.nextPlayer();
 	}
-	
-	// Partially inspired by the same method in BlobWars.
-	public void makeMove(ChessMove move) {
-		// TODO: 
-		Location from = move.getFrom();
-		Location to = move.getTo();
-		char pieceSymbol = move.getPiece().getSymbol();
-		
-		if (!getPossibleLocations(from).contains(to))
-            throw new IllegalArgumentException("Can't move piece that far.");
-		
+
+	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
+	// Handle the different cases differently.
+	public void makeMove(ChessMove move) {		
 		// TODO: CHANGE THIS AND MAKE CAPTURE PART
 		// Move piece to adjacent tile
-        if (board.getNeighborhood(from).contains(to)) {
-        	super.makeNormalMove(move);
-            displayBoard();
-        }
+		super.makeNormalMove(move);
+		displayBoard();
 	}
 	
 	/**
@@ -82,7 +111,7 @@ public class Chess extends ChessMoveGame {
         List<ChessMove> possibleMoves = new ArrayList<>();
         for (Location from: board.locations()) {
         	if (board.get(from) != null) {
-        		List<Location> moveTo = board.get(from).getLegalMoves(board);
+        		List<Location> moveTo = board.get(from).getPossibleMoves(board);
         		
         		for (Location to : moveTo) {
         			ChessMove move = new ChessMove(from, to, board.get(from));
@@ -92,11 +121,7 @@ public class Chess extends ChessMoveGame {
         }
         return possibleMoves;
 	}
-	
-	// TODO: Fix this method
-	public List<Location> getPossibleLocations(Location loc) {
-	    return board.getNeighborhood(loc, 1);
-	}
+
 
 	@Override
 	public Chess copy() {
@@ -114,6 +139,7 @@ public class Chess extends ChessMoveGame {
 	@Override
 	public boolean gameOver() {
 		// TODO Implement logic for checkmate
+		// If gamestate = check and no legal moves
 		return false;
 	}
 	

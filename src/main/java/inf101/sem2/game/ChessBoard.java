@@ -77,6 +77,8 @@ public class ChessBoard {
 
 	/**
 	 * Move piece at location from to location to
+	 * TODO: TESTING
+	 * 
 	 * 
 	 * @param from
 	 * @param to

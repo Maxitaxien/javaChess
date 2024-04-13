@@ -7,14 +7,19 @@ import inf101.sem2.game.ChessBoard;
 
 public class Queen extends Piece {
 
-	public Queen(char colour, char symbol, Location loc) {
-		super(colour, symbol, loc);
+	public Queen(char colour, Location loc) {
+		super(colour, 'Q', loc);
 	}
 
 	@Override
-	public List<Location> getLegalMoves(ChessBoard board) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Location> getPossibleMoves(ChessBoard board) {
+		DirectionalCalculator calculator = new DirectionalCalculator();
+		List<Location> cardinalMoves = calculator.calculateCardinal(getLocation(), board);
+		List<Location> diagonalMoves = calculator.calculateDiagonal(getLocation(), board);
+
+		cardinalMoves.addAll(diagonalMoves);
+		
+		return cardinalMoves;
 	}
 
 	@Override

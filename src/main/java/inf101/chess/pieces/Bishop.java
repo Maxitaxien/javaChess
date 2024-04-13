@@ -12,9 +12,9 @@ public class Bishop extends Piece{
 	}
 
 	@Override
-	public List<Location> getLegalMoves(ChessBoard board) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Location> getPossibleMoves(ChessBoard board) {
+		DirectionalCalculator calculator = new DirectionalCalculator();
+		return calculator.calculateDiagonal(getLocation(), board);
 	}
 
 	@Override

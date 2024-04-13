@@ -41,7 +41,7 @@ public abstract class ChessMoveGame extends ChessGame{
 		}
 		
 		// Check that the move is legal for the piece (that it can move to this square)
-		if (!toMove.getLegalMoves(board).contains(move.getTo())) {
+		if (!toMove.getPossibleMoves(board).contains(move.getTo())) {
 			return false;
 		}
 
@@ -49,7 +49,6 @@ public abstract class ChessMoveGame extends ChessGame{
 		Location to = move.getTo();
 		if (!board.isEmpty(to))
 			return false;
-		
 		return true;
 	}
 	

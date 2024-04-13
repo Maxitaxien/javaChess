@@ -37,20 +37,9 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	    game.displayBoard();
 
 	    while (true) {
-	    	System.out.println("Getting move.");
-	        Location from = gui.getFrom();
-	        Location to = gui.getTo();
-	        
-	        if (from == null || to == null) {
-	        	continue;
-	        }
-	        
-	        Piece piece = game.getGameBoard().get(from);
-	        
-	        ChessMove move = new ChessMove(from, to, piece);
+	        ChessMove move = gui.getMove(game.getGameBoard());
 	        
 	        if (game.validMove(move)) {
-	        	System.out.println("Valid move found.");
 	            return move;
 	        }
 	        
@@ -82,7 +71,7 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	 */
 	public static String readPlayerName(char symbol) {
 		String name = null;
-		while (!AbstractPlayer.isValidName(name)) {
+		while (!AbstractChessPlayer.isValidName(name)) {
 			name = JOptionPane.showInputDialog("Player " + symbol + ". Type in your name.");
 		}
 		return name;

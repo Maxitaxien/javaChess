@@ -15,3 +15,7 @@ Allow player to start with white or black.
 The AbstractPlayer currently only allows for one symbol - corresponding to the player.
 TODO: Find the best place to handle this such that we can draw different pieces.
 TODO: Choose and commit to one choice - are positions handled in pieces or board class?
+
+
+12.04:
+TODO: Make restart button work, 

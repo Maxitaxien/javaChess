@@ -147,29 +147,10 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 		Piece pieceAtPos = gameBoard.get(selectedPanels.get(0));
 		ChessMove move = new ChessMove(selectedPanels.get(0), selectedPanels.get(1), pieceAtPos);
 		return move;
-	}
-
-	public Location getFrom() {
-		List<Location> selectedPanels = board.getSelectedPanels();
-		if (selectedPanels.isEmpty())
-			return null;
-		Location loc = selectedPanels.get(0);
-		return loc;
-	}
-	
-	public Location getTo() {
-		List<Location> selectedPanels = board.getSelectedPanels();
-		if (selectedPanels.size() < 2) {
-			return null;
-		}
-		Location loc = selectedPanels.get(1);
-		return loc;
-	}
-	
-	
+	}	
 
 	/**
-	 * Maps from Piece values to colors
+	 * Maps from Player values to colors
 	 *
 	 * @param pieceAt The piece to be drawn
 	 * @return The color that this GUI implementation associates with the provided
@@ -181,7 +162,6 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	}
 
 	public void display(ChessBoard gameBoard) {
-		// TODO Auto-generated method stub
 		removeClickablePanels();
 		this.board = new ClickableChessGrid(gameBoard, players, getColors());
 		frame.add("Center", this.board);

@@ -52,12 +52,12 @@ public abstract class Piece {
 	}
 	
 	/**
-	 * Calculates legal moves for the piece
-	 * at it's current position. Should be updated
-	 * for all pieces any time a move is made.
+	 * Calculates possible moves for the piece.
+	 * The legality of the options are checked in different parts of the code
+	 * Some pieces need the board size to calculate possible moves.
 	 * @return a list of possible locations the piece can move to
 	 */
-	public abstract List<Location> getLegalMoves(ChessBoard board);
+	public abstract List<Location> getPossibleMoves(ChessBoard board);
 
 	/**
 	 * Indicates that the piece has been moved.

@@ -8,18 +8,28 @@ inf101.chess.pieces
 	Rook
 	Queen
 	King
+inf101.chess.rules (optional if not easily implementable in inf101.sem2.game)
+	CheckRule
+	StalemateRule
+	CheckmateRule
 inf101.grid
 	ChessMove (extends move)
-	Otherwise same as before
+	Otherwise - use some existing classes
 inf101.sem2
-	Same as before
+	ChessGUI
 inf101.sem2.game
-	ChessGraphics
-	Maybe some changes to multimovegame/new class that extends it
-	Otherwise same as before
+	ChessBoard (inspired by GameBoard)
+	ChessGraphics (inspired by Graphics)
+	ChessMoveGame (inspired by multimovegame)
+	Otherwise use existing classes
+	GameState (enum to track if stalemate, check, checkmate etc.)
 inf101.sem2.game.games
-	add Chess.java
+	Chess (main game file)
 inf101.sem2.GUI
+	ChessGamePanel (adapted from GamePanel)
+	ChessGUI (adapted from GameGUI)
+	ClickableChessGrid (adapted from ClickableGrid)
+	ChessMenu (adapted from MainMenu)
 	add instructions/rules button
 
 Can't see the need for more classes in the other packages as of yet

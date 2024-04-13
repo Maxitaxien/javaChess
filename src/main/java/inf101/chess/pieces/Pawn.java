@@ -28,19 +28,25 @@ public class Pawn extends Piece {
 		hasMoved = true;
 	}
 
-	// TODO: Implement
 	@Override
-	public List<Location> getLegalMoves(ChessBoard board) {
-		List<Location> legalMoves = new ArrayList<>();
+	public List<Location> getPossibleMoves(ChessBoard board) {
+		List<Location> possibleMoves = new ArrayList<>();
 		int currentRow = this.getLocation().row;
 		int currentCol = this.getLocation().col;
 		
-		if (getColour() == 'W') {
-			legalMoves.add(new Location(currentRow + 1, currentCol));
+		int direction = (getColour() == 'W') ? 1 : -1;
+		
+		// Normal move down the board
+		possibleMoves.add(new Location(currentRow + direction, currentCol));
+		
+		// Captures (handle these differently in other parts of the code?)
+		possibleMoves.add(new Location(currentRow + direction, currentCol + 1));
+		possibleMoves.add(new Location(currentRow + direction, currentCol - 1));
+		
+		if (!hasMoved()) {
+			possibleMoves.add(new Location(currentRow + direction*2, currentCol));
 		}
-		else {
-			legalMoves.add(new Location(currentRow - 1, currentCol));
-		}
-		return legalMoves;
+		
+		return possibleMoves;
 	}
 }
