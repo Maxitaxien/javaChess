@@ -15,10 +15,7 @@ import inf101.chess.pieces.Piece;
 import inf101.grid.Grid;
 import inf101.grid.Location;
 import inf101.sem2.game.ChessBoard;
-import inf101.sem2.game.GameBoard;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
-
 /**
  * This class is a grid of Game panels.
  * This is also a MouseListener for all those GamePanels
@@ -45,6 +42,12 @@ public class ClickableChessGrid extends JPanel {
 	 * Locations of panels which have been selected
 	 */
 	private List<Location> selectedPanels;
+	
+	/**
+	 * Locations of panels that represent possible moves for
+	 * the selected piece
+	 */
+	private List<Location> previousPossibleMoves;
 
 	private boolean confirmMove;
 
@@ -63,6 +66,7 @@ public class ClickableChessGrid extends JPanel {
 		int cols = board.numColumns();
 		clickablePanels = new Grid<>(rows, cols);
 		selectedPanels = new ArrayList<>();
+		previousPossibleMoves = new ArrayList<>();
 		setLayout(new GridLayout(rows, cols));
 		makeClickablePanels();
 
@@ -100,19 +104,6 @@ public class ClickableChessGrid extends JPanel {
 	    }
 	    validate();
 	    repaint();
-	}
-
-	/**
-	 * Finds the color to use on those locations where the given
-	 * player has placed.
-	 *
-	 * @param player
-	 */
-	protected Color getColor(Piece piece) {
-		if (piece == null) {
-			return null;
-		}
-		return colorMap.get(piece.getColour());
 	}
 
 	/**
@@ -176,32 +167,56 @@ public class ClickableChessGrid extends JPanel {
 	}
 
 	class ClickableGridListener extends MouseAdapter {
+	    @Override
+	    public void mousePressed(MouseEvent me) {
+	        if (clickablePanels.contains(me.getSource())) {
+	            try {
+	                GamePanel currentPanel = (GamePanel) me.getSource();
+	                Location currentLocation = clickablePanels.locationOf(currentPanel);
 
-		// This is what happens when the mouse clicks on one of the squares of the grid.
-		@Override
-		public void mousePressed(MouseEvent me) {
-			if (clickablePanels.contains(me.getSource())) {
-				try {
-					GamePanel currentPanel = (GamePanel) me.getSource();
-					Location currentLocation = clickablePanels.locationOf(currentPanel);
-					// Check if panel has been previously selected
-					if (selectedPanels.contains(currentLocation)) {
-						confirmMove = true;
-					}
-					setSelected(currentPanel);
+	                // Clear previous possible moves
+	                clearPreviousPossibleMoves();
 
-					if (confirmMove) {
-						deselectPanels();
-						confirmMove = false;
-					}
-					updateGui();
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-				}
-			} else {
-				System.err.println("Clicked on wrong thing: " + me.getSource());
-			}
-		}
+	                // Check and handle move confirmation
+	                if (selectedPanels.contains(currentLocation) && !confirmMove) {
+	                    confirmMove = true;
+	                } else {
+	                    Piece piece = board.get(currentLocation);
+	                    // TODO: Only do this for current player
+	                    if (piece != null ) {
+	                        List<Location> possibleMoves = piece.getPossibleMoves(board);
+	                        for (Location loc : possibleMoves) {
+	                            GamePanel panel = clickablePanels.get(loc);
+	                            if (panel != null) {
+	                                panel.setPossibleMove(true);
+	                            }
+	                        }
+	                        previousPossibleMoves = new ArrayList<>(possibleMoves);
+	                    }
+	                }
+	                setSelected(currentPanel);
+
+	                if (confirmMove) {
+	                    deselectPanels();
+	                    confirmMove = false;
+	                }
+	                updateGui();
+	            } catch (Exception e) {
+	                System.err.println(e.getMessage());
+	            }
+	        } else {
+	            System.err.println("Clicked on wrong thing: " + me.getSource());
+	        }
+	    }
+
+	    private void clearPreviousPossibleMoves() {
+	        for (Location loc : previousPossibleMoves) {
+	            GamePanel panel = clickablePanels.get(loc);
+	            if (panel != null) {
+	                panel.setPossibleMove(false);
+	            }
+	        }
+	        previousPossibleMoves.clear();
+	    }
 	}
-
 }

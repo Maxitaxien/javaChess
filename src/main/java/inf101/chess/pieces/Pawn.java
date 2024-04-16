@@ -8,6 +8,8 @@ import inf101.sem2.game.ChessBoard;
 
 public class Pawn extends Piece {
 	private boolean hasMoved = false;
+	// Used to check if the pawn has just moved two squares - then it can be taken en passant
+	private boolean canEnPassant = false;
 	
 	public Pawn(char colour, Location loc) {
 		super(colour, 'P', loc);
@@ -34,16 +36,30 @@ public class Pawn extends Piece {
 		int currentRow = this.getLocation().row;
 		int currentCol = this.getLocation().col;
 		
+		Location newLoc;
+		
 		int direction = (getColour() == 'W') ? 1 : -1;
 		
 		// Normal move down the board
-		possibleMoves.add(new Location(currentRow + direction, currentCol));
+		newLoc = new Location(currentRow + direction, currentCol);
+		if (board.isOnBoard(newLoc) && board.get(newLoc) == null) {
+			possibleMoves.add(newLoc);
+		}
 		
-		// Captures (handle these differently in other parts of the code?)
-		possibleMoves.add(new Location(currentRow + direction, currentCol + 1));
-		possibleMoves.add(new Location(currentRow + direction, currentCol - 1));
+		// Captures
+		newLoc = new Location(currentRow + direction, currentCol + 1);
+		if (board.isOpponent(getColour(), newLoc)) {
+			possibleMoves.add(newLoc);
+		}
 		
-		if (!hasMoved()) {
+		newLoc = new Location(currentRow + direction, currentCol - 1);
+		if (board.isOpponent(getColour(), newLoc)) {
+			possibleMoves.add(newLoc);
+		}
+		
+		newLoc = new Location(currentRow + direction, currentCol);
+		// Initial move
+		if (!hasMoved() && board.isOnBoard(newLoc) && board.get(newLoc) == null) {
 			possibleMoves.add(new Location(currentRow + direction*2, currentCol));
 		}
 		

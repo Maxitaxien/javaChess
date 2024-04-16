@@ -1,10 +1,7 @@
-package inf101.sem2.terminal;
+package inf101.sem2.player;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
 
 /**
  * This class keep track of players and who's turn it is.

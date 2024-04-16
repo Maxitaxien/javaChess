@@ -5,7 +5,7 @@ import java.util.List;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.terminal.ChessPlayerList;
+import inf101.sem2.player.ChessPlayerList;
 
 /**
  * This class models turn based games where each round the current player gets
@@ -32,16 +32,20 @@ public abstract class ChessGame {
 
 	/** keeps track of whose turn it is */
 	protected ChessPlayerList players;
-
+	
+	/** keeps track fo the current game state */
+	protected GameState state;
+	
 	/* ************** Constructors ****************/
-	public ChessGame(ChessBoard board, ChessGraphics graphics) {
+	public ChessGame(ChessBoard board, ChessGraphics graphics, GameState state) {
 		this.board = board;
 		this.graphics = graphics;
+		this.state = state;
 		players = new ChessPlayerList();
 	}
 
-	public ChessGame(ChessBoard board, ChessGraphics graphics, Iterable<ChessPlayer> players) {
-		this(board, graphics);
+	public ChessGame(ChessBoard board, ChessGraphics graphics, GameState state, Iterable<ChessPlayer> players) {
+		this(board, graphics, state);
 		for (ChessPlayer p : players) {
 			addPlayer(p);
 		}
@@ -68,7 +72,7 @@ public abstract class ChessGame {
 				// Get move from player and execute if valid
 				ChessMove move = getCurrentPlayer().getMove(copy());
 				if (validMove(move)) {
-					makeMove(move);
+					makeMove(move, state);
 					players.nextPlayer();
 				} else {
 					graphics.displayMessage("That is an invalid move");
@@ -123,11 +127,11 @@ public abstract class ChessGame {
 
 	/**
 	 * This method performs a move for the current player and advances to next
-	 * player
+	 * player. This is handled differently based on the state of the game.
 	 *
-	 * @param loc
+	 * @param move the move to make
 	 */
-	public abstract void makeMove(ChessMove move);
+	public abstract void makeMove(ChessMove move, GameState state);
 
 
 	/**
@@ -196,7 +200,7 @@ public abstract class ChessGame {
 	 * @param player
 	 * @return
 	 */
-	public boolean isLooser(ChessPlayer player) {
+	public boolean isLoser(ChessPlayer player) {
 		for (ChessPlayer p : players()) {
 			if (p != player && isWinner(p)) {
 				return true;
@@ -217,7 +221,7 @@ public abstract class ChessGame {
 		if (isWinner(p)) {
 			return 1;
 		}
-		if (isLooser(p)) {
+		if (isLoser(p)) {
 			return -1;
 		}
 		return 0;
@@ -270,7 +274,7 @@ public abstract class ChessGame {
 	}
 
 	public void sleep() {
-		if (graphics instanceof DummyGraphics)
+		if (graphics instanceof ChessDummyGraphics)
 			return;
 		try {
 			Thread.sleep(SINGLE_MOVE_TIME);

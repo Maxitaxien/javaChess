@@ -25,6 +25,7 @@ public class GamePanel extends JPanel {
 
 	private final Color SELECTED_PANEL_COLOR = Color.CYAN;
 	private boolean isSelected;
+	private boolean possibleMove;
 	private Color color;
 	private Piece pieceToDraw;
 	
@@ -48,7 +49,6 @@ public class GamePanel extends JPanel {
 	    Dimension dim = this.getSize();
 
 	    // Overlay with selection color if selected
-	    // TODO: add little grey squares on each legal move for piece on square (maybe in clickablechessgrid)
 	    if (isSelected) {
 	        g.setColor(SELECTED_PANEL_COLOR);
 	        g.fillRect(0, 0, dim.width, dim.height);
@@ -58,6 +58,7 @@ public class GamePanel extends JPanel {
 		    g.setColor(color);
 		    g.fillRect(0, 0, dim.width, dim.height);
 	    }
+	   
 
 	    // Draw piece if present
 	    if (pieceToDraw != null) {
@@ -68,6 +69,16 @@ public class GamePanel extends JPanel {
 	            g.drawImage(pieceImage, x, y, this);
 	        }
 	    }
+	    
+	    // If selected piece can move here, draw a little oval in the square
+	    if (possibleMove) {
+	        int circleSize = 10; 
+	        int x = (dim.width - circleSize) / 2;
+	        int y = (dim.height - circleSize) / 2;
+	        g.setColor(new Color(128, 128, 128, 128)); // Grey color with transparency
+	        g.fillOval(x, y, circleSize, circleSize);
+	    }
+	    
 	}
 
 	
@@ -99,6 +110,14 @@ public class GamePanel extends JPanel {
 
 	public void setSelected(boolean selected) {
 		isSelected = selected;
+	}
+	
+	/**
+	 * TODO: Draws small circles on the panels indicating legal moves
+	 * @return
+	 */
+	public void setPossibleMove(boolean possibleMove) {
+		this.possibleMove = possibleMove;
 	}
 
 	public boolean isSelected() {

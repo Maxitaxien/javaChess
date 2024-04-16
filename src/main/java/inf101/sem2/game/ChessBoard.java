@@ -28,8 +28,8 @@ public class ChessBoard {
 			System.err.println("Can not place at " + loc + ".");
 		}
 	}
-	
 
+	
 	/**
 	 * Place new piece at location even if there is already another piece there.
 	 * This essentially represents a piece capture.
@@ -40,7 +40,8 @@ public class ChessBoard {
 	public void swap(Location loc, Piece piece) {
 		grid.set(loc, piece);
 	}
-
+	
+	
 	public Piece get(Location loc) {
 		return grid.get(loc);
 	}
@@ -74,10 +75,31 @@ public class ChessBoard {
 			return false;
 		}
 	}
+	
+	/**
+	 * Checks if an opposing piece exists on a square.
+	 * @param pieceChar
+	 * @param loc
+	 * @return
+	 */
+	public boolean isOpponent(char pieceChar, Location loc) {
+		try {
+			boolean empty = isEmpty(loc);
+			if (empty) {
+				return false;
+			}
+			else {
+				return getPlayerChar(loc) != pieceChar;
+			}
+		} catch (Exception E) {
+			return false;
+		}
+	}
+	
+	
 
 	/**
 	 * Move piece at location from to location to
-	 * TODO: TESTING
 	 * 
 	 * 
 	 * @param from

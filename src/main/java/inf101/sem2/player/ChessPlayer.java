@@ -4,7 +4,6 @@ import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.grid.Move;
 import inf101.sem2.game.ChessGame;
-import inf101.sem2.game.Game;
 
 /**
  * Players has only one method that is specific to the game they play.

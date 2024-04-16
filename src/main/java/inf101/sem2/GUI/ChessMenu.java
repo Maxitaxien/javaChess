@@ -17,28 +17,25 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import inf101.sem2.game.ChessGame;
-import inf101.sem2.game.Game;
-import inf101.sem2.game.games.BlobWars;
-import inf101.sem2.game.games.ConnectFour;
-import inf101.sem2.game.games.Othello;
-import inf101.sem2.game.games.TicTacToe;
+import inf101.sem2.game.GameState;
 import inf101.sem2.game.games.Chess;
 import inf101.sem2.player.ChessPlayer;
 import inf101.sem2.player.GameEndedException;
 import inf101.sem2.player.ChessGUIPlayer;
-import inf101.sem2.player.Player;
 import inf101.sem2.player.RestartException;
 import inf101.sem2.player.ai.AlphaBetaChessPlayer;
 import inf101.sem2.player.ai.AlphaBetaPlayer;
 import inf101.sem2.player.ai.DumbPlayer;
 
 /**
- * This class is a Game menu which lets you choose which game to play.
- *
- * @author Martin Vatshelle - martin.vatshelle@uib.no
+ * This class represents a main menu with settings and an option
+ * to start the game of chess.
+ * 
+ * Adapted from MainMenu by Martin Vatshelle.
  */
 public class ChessMenu implements ActionListener {
-	private final JButton startButton; // BUtton to start new Chess game
+	private final JButton startButton; 
+	private final JButton settingsButton; 
 	private final JFrame frame;
 	public Chess game;
 	public ChessGUI gui;
@@ -54,7 +51,8 @@ public class ChessMenu implements ActionListener {
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
 		buttons.setBorder(new EmptyBorder(10, 10, 30, 10));
 
-		startButton = addButton(buttons, "Chess");
+		startButton = addButton(buttons, "Start Game");
+		settingsButton = addButton(buttons, "Settings");
 
 		// add buttons to the window
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -97,9 +95,12 @@ public class ChessMenu implements ActionListener {
 				
 		Iterable<ChessPlayer> players = getPlayers(s1, s2);
 		ChessGUI graphics = new ChessGUI(players);
+		GameState initialState = GameState.ACTIVE;
 		
 		if (e.getSource() == startButton) {
-			game = new Chess(graphics, players);
+			game = new Chess(graphics, initialState, players);
+			// TODO:
+			// GridVisualiser moveVisualiser = new ChessMoveVisualiser(game, gui);
 		}
 		if (game == null) {
 			System.err.println("Button not recognized, no game created.");

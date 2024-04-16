@@ -1,4 +1,4 @@
-package inf101.chess.pieces;
+package inf101.chess.logic;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ public class DirectionalCalculator {
 	 * @param board the board to place on, where the size of the board is relevant
 	 * @return a list of locations in the cardinal directions
 	 */
-	public List<Location> calculateCardinal(Location loc, ChessBoard board) {
+	public List<Location> calculateCardinal(Location loc, ChessBoard board, char pieceColour) {
 	    List<Location> cardinalMoves = new ArrayList<>();
 	    int currentRow = loc.row;
 	    int currentCol = loc.col;
@@ -26,9 +26,8 @@ public class DirectionalCalculator {
 
 	    // Up moves
 	    for (int row = currentRow - 1; row >= 0; row--) {
-	    	Location moveTo = new Location(row, currentCol);
-	        cardinalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	        Location moveTo = new Location(row, currentCol);
+	        if (!addMove(moveTo, board, pieceColour, cardinalMoves)) {
 	        	break;
 	        }
 	    }
@@ -36,8 +35,7 @@ public class DirectionalCalculator {
 	    // Down moves
 	    for (int row = currentRow + 1; row < numRows; row++) {
 	    	Location moveTo = new Location(row, currentCol);
-	        cardinalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	        if (!addMove(moveTo, board, pieceColour, cardinalMoves)) {
 	        	break;
 	        }
 	    }
@@ -45,8 +43,7 @@ public class DirectionalCalculator {
 	    // Left moves
 	    for (int col = currentCol - 1; col >= 0; col--) {
 	    	Location moveTo = new Location(currentRow, col);
-	        cardinalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	        if (!addMove(moveTo, board, pieceColour, cardinalMoves)) {
 	        	break;
 	        }
 	    }
@@ -54,15 +51,14 @@ public class DirectionalCalculator {
 	    // Right moves
 	    for (int col = currentCol + 1; col < numCols; col++) {
 	    	Location moveTo = new Location(currentRow, col);
-	        cardinalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	        if (!addMove(moveTo, board, pieceColour, cardinalMoves)) {
 	        	break;
 	        }
 	    }
 
 	    return cardinalMoves;
 	}
-
+	
 	
 	
 	/**
@@ -71,48 +67,63 @@ public class DirectionalCalculator {
 	 * @param board the board to place on, where the size of the board is relevant
 	 * @return a list of locations in the diagonal directions
 	 */
-	public List<Location> calculateDiagonal(Location loc, ChessBoard board) {
+	public List<Location> calculateDiagonal(Location loc, ChessBoard board, char pieceColour) {
 	    List<Location> diagonalMoves = new ArrayList<>();
 	    int numRows = board.numRows();
 	    int numColumns = board.numColumns();
 	    int currentRow = loc.row;
 	    int currentCol = loc.col;
 
-	    // Down-right diagonal
+	    // Up-right diagonal
 	    for (int i = 1; currentRow + i < numRows && currentCol + i < numColumns; i++) {
 	    	Location moveTo = new Location(currentRow + i, currentCol + i);
-	        diagonalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	    	if (!addMove(moveTo, board, pieceColour, diagonalMoves)) {
 	        	break;
 	        }
 	    }
 	    // Up-left diagonal
 	    for (int i = 1; currentRow - i >= 0 && currentCol - i >= 0; i++) {
 	    	Location moveTo = new Location(currentRow - i, currentCol - i);
-	        diagonalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	    	if (!addMove(moveTo, board, pieceColour, diagonalMoves)) {
 	        	break;
 	        }
 	    }
-	    // Up-right diagonal
+	    // Down-right diagonal
 	    for (int i = 1; currentRow + i < numRows && currentCol - i >= 0; i++) {
 	    	Location moveTo = new Location(currentRow + i, currentCol - i);
-	        diagonalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	    	if (!addMove(moveTo, board, pieceColour, diagonalMoves)) {
 	        	break;
 	        }
 	    }
 	    // Down-left diagonal
 	    for (int i = 1; currentRow - i >= 0 && currentCol + i < numColumns; i++) {
 	    	Location moveTo = new Location(currentRow - i, currentCol + i);
-	        diagonalMoves.add(moveTo);
-	        if (!(board.isEmpty(moveTo))) {
+	    	if (!addMove(moveTo, board, pieceColour, diagonalMoves)) {
 	        	break;
 	        }
 	    }
 
 	    return diagonalMoves;
 	}
+	
+	/**
+	 * Adds the move, returns false
+	 * when the loop should be stopped.
+	 */
+	private boolean addMove(Location move, ChessBoard board, char pieceColour, List<Location> moveList) {
+        if (!(board.isEmpty(move))) {
+        	if (board.isOpponent(pieceColour, move)) {
+        		moveList.add(move);
+        		return false;
+        	}
+        	else {
+        		return false;
+        	}
+        }
+        moveList.add(move);
+        return true;
+	}
+
 
 	
 

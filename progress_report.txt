@@ -1,8 +1,8 @@
 08.04: Downloaded and started understanding code. Added chess button along with others.
-TODO: Change player names in selection. Create chess pieces to populate board. 
+TODO: 
 
 08.04: Created board and basic outline of game.
-TODO: Change board square colours. Create chess pieces to populate board. Method to flip board?
+TODO: Method to flip board?
 
 09.04:
 TODO: Find out where logic for calculating legal moves should be done. We need positions of all pieces to do this.
@@ -18,4 +18,7 @@ TODO: Choose and commit to one choice - are positions handled in pieces or board
 
 
 12.04:
-TODO: Make restart button work, 
+TODO: Make restart button work
+
+16.04:
+TODO: Make castling work.

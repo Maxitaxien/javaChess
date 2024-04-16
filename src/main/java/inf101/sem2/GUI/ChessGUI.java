@@ -17,18 +17,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 
+import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.grid.Move;
 import inf101.sem2.game.ChessBoard;
 import inf101.sem2.game.ChessGraphics;
-import inf101.sem2.game.GameBoard;
-import inf101.sem2.game.Graphics;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
 
 /**
  * This class combines two buttons with a Clickable grid in one JFrame
@@ -136,18 +132,30 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	}
 	
 	/**
-	 * This method reports the last grid cell that was clicked by the user.
+	 * This method reports the move selected by the user.
 	 * 
 	 * @return
 	 */
 	public ChessMove getMove(ChessBoard gameBoard) {
-		List<Location> selectedPanels = board.getSelectedPanels();
-		if (selectedPanels.size() < 2)
-			return null;
-		Piece pieceAtPos = gameBoard.get(selectedPanels.get(0));
-		ChessMove move = new ChessMove(selectedPanels.get(0), selectedPanels.get(1), pieceAtPos);
-		return move;
+	    List<Location> selectedPanels = board.getSelectedPanels();
+	    if (selectedPanels.size() != 2)
+	        return null;
+	    Location from = selectedPanels.get(0);
+	    Location to = selectedPanels.get(1);
+	    Piece piece = gameBoard.get(from);
+
+	    // Create a different kind of move if castling is attempted
+	    if (piece instanceof King && Math.abs(from.col - to.col) > 1) {
+	        boolean kingside = to.col > from.col;
+	        Location rookFrom = new Location(from.row, kingside ? gameBoard.numColumns() - 1 : 0);
+	        Location rookTo = new Location(to.row, kingside ? 4 : 2);
+	        return new ChessMove(from, to, piece, rookFrom, rookTo);
+	    } else {
+	        // Regular move
+	        return new ChessMove(from, to, piece);
+	    }
 	}	
+	
 
 	/**
 	 * Maps from Player values to colors

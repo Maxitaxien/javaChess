@@ -6,11 +6,10 @@ import java.util.List;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.sem2.game.ChessMoveGame;
+import inf101.sem2.game.GameState;
 import inf101.sem2.game.ChessBoard;
 import inf101.sem2.game.ChessGraphics;
-import inf101.sem2.game.Graphics;
 import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.Player;
 import inf101.chess.pieces.*;
 
 public class Chess extends ChessMoveGame {
@@ -19,15 +18,15 @@ public class Chess extends ChessMoveGame {
 	 * Initializing chess much in the same way as Othello.
 	 * Credit for this part of the code goes to the creator of Othello.java
 	 */
-	public Chess(ChessGraphics graphics, ChessPlayer p1, ChessPlayer p2) {
-		super(new ChessBoard(8, 8), graphics);
+	public Chess(ChessGraphics graphics, GameState state, ChessPlayer p1, ChessPlayer p2) {
+		super(new ChessBoard(8, 8), graphics, state);
 		addPlayer(p1);
 		addPlayer(p2);
 		initializeBoard();
 	}
 	
-	public Chess(ChessGraphics graphics, Iterable<ChessPlayer> players) {
-		super(new ChessBoard(8, 8), graphics, players);
+	public Chess(ChessGraphics graphics, GameState state, Iterable<ChessPlayer> players) {
+		super(new ChessBoard(8, 8), graphics, state, players);
 		initializeBoard();
 	}
 	
@@ -93,10 +92,8 @@ public class Chess extends ChessMoveGame {
 
 	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
 	// Handle the different cases differently.
-	public void makeMove(ChessMove move) {		
-		// TODO: CHANGE THIS AND MAKE CAPTURE PART
-		// Move piece to adjacent tile
-		super.makeNormalMove(move);
+	public void makeMove(ChessMove move, GameState state) {		
+		super.makeMove(move, state);		
 		displayBoard();
 	}
 	
@@ -108,24 +105,72 @@ public class Chess extends ChessMoveGame {
 	 */
 	@Override
     public List<ChessMove> getPossibleMoves() {
-        List<ChessMove> possibleMoves = new ArrayList<>();
-        for (Location from: board.locations()) {
-        	if (board.get(from) != null) {
-        		List<Location> moveTo = board.get(from).getPossibleMoves(board);
-        		
-        		for (Location to : moveTo) {
-        			ChessMove move = new ChessMove(from, to, board.get(from));
-        			possibleMoves.add(move);
-        		}
-        	}
-        }
+		List<ChessMove> possibleMoves = new ArrayList<>();
+		if (state == GameState.ACTIVE) {
+	        for (Location from: board.locations()) {
+	        	if (board.get(from) != null) {
+	        		Piece pieceToMove = board.get(from);
+	        		// If the move is not made by the king, just add all the moves as normal:
+	        		if (pieceToMove.getSymbol() != 'K') {
+	        			List<Location> moveTo = pieceToMove.getPossibleMoves(board);
+		        		
+		        		for (Location to : moveTo) {
+		        			ChessMove move = new ChessMove(from, to, pieceToMove);
+		        			possibleMoves.add(move);
+		        		}
+	        		}
+	        		// If the move is being made by the king, check if it is a castle and handle these differently
+	        		// We can check this by seeing if the valid move moves the king more than one column
+	        		else {
+	        			List<Location> moveTo = pieceToMove.getPossibleMoves(board);
+        			
+	        			for (Location to : moveTo) {
+	        				ChessMove move;
+	        				if (from.col - to.col < -1) {
+	        					// Indicates queenside castling, which means the rook is at four to the right
+	        					// from the current king position
+	        					Location oldRookLocation = new Location(to.row, from.col + 4);
+	        					Location newRookLocation = new Location(to.row, from.col + 1);
+	        					move = new ChessMove(from, to, pieceToMove, 
+	        							oldRookLocation, newRookLocation);
+	        					move.castled();
+	        				}
+	        				else if (from.col - to.col > 1) {
+	        					// Indicates kingside castling, which means the rook is at three to the left
+	        					// from the current king position
+	        					Location oldRookLocation = new Location(to.row, from.col - 3);
+	        					Location newRookLocation = new Location(to.row, from.col - 1);
+	        					move = new ChessMove(from, to, pieceToMove, 
+	        							oldRookLocation, newRookLocation);
+	        					move.castled();
+	        				}
+	        				else {
+	        					// Indicates a normal move
+	        					move = new ChessMove(from, to, pieceToMove);
+	        				}
+	        				possibleMoves.add(move);
+	        					
+	        				}
+        					
+        				}
+        			}
+        		}	        		
+	        	}
+		// TODO: Copy board, for each move, make it.
+		// Check if the king can be taken on the resulting board.
+		// If so, the move is not legal. 
+		// If no moves are found, set the state to CHECKMATE
+		else if (state == GameState.CHECK) {
+			;
+		}
         return possibleMoves;
 	}
 
 
+
 	@Override
 	public Chess copy() {
-		Chess newGame = new Chess(graphics, players);
+		Chess newGame = new Chess(graphics, state, players);
 		copyTo(newGame);
 		return newGame;
 		}

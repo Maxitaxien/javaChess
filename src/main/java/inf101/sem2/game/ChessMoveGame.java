@@ -1,5 +1,6 @@
 package inf101.sem2.game;
 
+import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
@@ -12,17 +13,18 @@ import inf101.sem2.player.ChessPlayer;
  */
 public abstract class ChessMoveGame extends ChessGame{
 
-	public ChessMoveGame(ChessBoard board, ChessGraphics graphics) {
-		super(board, graphics);
+	public ChessMoveGame(ChessBoard board, ChessGraphics graphics, GameState state) {
+		super(board, graphics, state);
 	}
 	
-	public ChessMoveGame(ChessBoard board, ChessGraphics graphics, Iterable<ChessPlayer> players) {
-		super(board, graphics, players);
+	public ChessMoveGame(ChessBoard board, ChessGraphics graphics, GameState state, Iterable<ChessPlayer> players) {
+		super(board, graphics, state, players);
 	}
 	
 	/**
 	 * Checks if the given move is valid. As this is calculated differently
 	 * for each piece, this is calculated in the Piece classes.
+	 * TODO: Determine if move is a capture
 	 * 
 	 * @param move the move to make
 	 * @return true if valid move. False if not.
@@ -44,11 +46,15 @@ public abstract class ChessMoveGame extends ChessGame{
 		if (!toMove.getPossibleMoves(board).contains(move.getTo())) {
 			return false;
 		}
-
 		
-		Location to = move.getTo();
-		if (!board.isEmpty(to))
-			return false;
+		// Handle castling. If a king has a legal move that moves more than one square to the left or right,
+		// that move is a legal castle and should be handled accordingly.
+		if (toMove instanceof King) {
+			if (Math.abs(move.getFrom().col - move.getTo().col) > 1) {
+				return true;
+			}
+		}
+
 		return true;
 	}
 	
@@ -60,13 +66,15 @@ public abstract class ChessMoveGame extends ChessGame{
 	 *
 	 * @param loc
 	 */
-	public void makeNormalMove(ChessMove move) {
+	public void makeMove(ChessMove move, GameState state) {
 		if (!validMove(move))
 			throw new IllegalArgumentException("Cannot make move:\n" + move);
 
 		board.movePiece(move.getFrom(), move.getTo());
+		if (move.isCastle()) {
+			board.movePiece(move.getRookFrom(), move.getRookTo());
+		}
 	}
-	
 	
 
 

@@ -60,9 +60,13 @@ public abstract class Piece {
 	public abstract List<Location> getPossibleMoves(ChessBoard board);
 
 	/**
-	 * Indicates that the piece has been moved.
-	 * Used in Pawn, Rook and King such that we know if they have been moved
-	 * (This is relevant for these pieces only)
+	 * Moves the piece and updates the hasMoved attribute if the piece has one.
 	 */
 	public abstract void moved();
+	
+	/**
+	 * Let's us know if the piece has been moved earlier in the game.
+	 * @return boolean indicating if the piece has previously moved
+	 */
+	public abstract boolean hasMoved();
 }

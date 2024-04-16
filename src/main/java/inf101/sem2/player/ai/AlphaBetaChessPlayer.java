@@ -1,5 +1,6 @@
 package inf101.sem2.player.ai;
 
+import inf101.grid.ChessMove;
 import inf101.grid.Move;
 import inf101.sem2.game.ChessGame;
 import inf101.sem2.game.Game;
@@ -53,10 +54,10 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
 	}
 
 	@Override
-	public <T> T getMove(ChessGame<T> game) {
+	public ChessMove getMove(ChessGame game) {
 		game.displayMessage(name + " is thinking...");
         currentPlayer = game.getCurrentPlayer();
-		ChessStrategy<T> best = bestMove(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		ChessStrategy best = bestMove(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return best.move;
 	}
 
@@ -67,20 +68,20 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
 	 * @param depth
 	 * @return
 	 */
-	private <T> ChessStrategy<T> bestMove(ChessGame<T> game, int depth, int alpha, int beta) {
-		ChessStrategy<T> best = null;
+	private ChessStrategy bestMove(ChessGame game, int depth, int alpha, int beta) {
+		ChessStrategy best = null;
 		int bestScore = 0;
 
 		// try each possible strategy
-		for (T move : game.getPossibleMoves()) {
+		for (move : game.getPossibleMoves()) {
 			// make a copy of the game and try the move
-			ChessGame<T> newGame = game.copyGameWithoutGraphics();
+			ChessGame newGame = game.copyGameWithoutGraphics();
 			newGame.makeMove(move); // note that this changes the current player in the copy but not the real game
 			newGame.nextPlayer();
 
-			ChessStrategy<T> current = null;
+			ChessStrategy current = null;
 			if (newGame.gameOver() || depth == 1 || newGame.getPossibleMoves().isEmpty()) { // No more moves can be made
-				current = new ChessStrategy<T>(move, newGame);
+				current = new ChessStrategy(move, newGame);
 			} else {
 				// call recursively such that the opponent makes the move that is best for him
 				// change the sign since this is the score of the best move for opponent
@@ -120,11 +121,11 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-class ChessStrategy<MoveType> {
-	MoveType move;
-	ChessGame<MoveType> game;
+class ChessStrategy {
+	ChessMove move;
+	ChessGame game;
 
-	public ChessStrategy(MoveType move, ChessGame<MoveType> game) {
+	public ChessStrategy(ChessMove move, ChessGame game) {
 		this.move = move;
 		this.game = game;
 	}
