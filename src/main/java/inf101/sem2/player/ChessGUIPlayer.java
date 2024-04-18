@@ -58,7 +58,7 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	        }
 	    }
 	}
-
+	
 	private boolean hasValidMove(ChessMoveGame game, ChessMove move) {
 		return game.validMove(move);
 	}
@@ -76,4 +76,5 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 		}
 		return name;
 	}
+	
 }

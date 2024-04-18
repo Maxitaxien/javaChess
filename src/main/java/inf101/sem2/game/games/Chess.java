@@ -10,6 +10,7 @@ import inf101.sem2.game.GameState;
 import inf101.sem2.game.ChessBoard;
 import inf101.sem2.game.ChessGraphics;
 import inf101.sem2.player.ChessPlayer;
+import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.pieces.*;
 
 public class Chess extends ChessMoveGame {
@@ -89,14 +90,12 @@ public class Chess extends ChessMoveGame {
 		
 		players.nextPlayer();
 	}
-
-	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
-	// Handle the different cases differently.
-	public void makeMove(ChessMove move, GameState state) {		
-		super.makeMove(move, state);		
+	
+	@Override
+	public void makeMove(ChessMove move, GameState state) {
+		super.makeMove(move, state);
 		displayBoard();
 	}
-	
 	/**
 	 * PUT THIS IN OVERRIDDEN
 	 * Look through grid. When we find a piece, calculate it's 
@@ -108,7 +107,7 @@ public class Chess extends ChessMoveGame {
 		List<ChessMove> possibleMoves = new ArrayList<>();
 		if (state == GameState.ACTIVE) {
 	        for (Location from: board.locations()) {
-	        	if (board.get(from) != null) {
+	        	if (board.get(from) != null && board.get(from).getColour() == players.getCurrentPlayerChar()) {
 	        		Piece pieceToMove = board.get(from);
 	        		// If the move is not made by the king, just add all the moves as normal:
 	        		if (pieceToMove.getSymbol() != 'K') {
@@ -161,10 +160,35 @@ public class Chess extends ChessMoveGame {
 		// If so, the move is not legal. 
 		// If no moves are found, set the state to CHECKMATE
 		else if (state == GameState.CHECK) {
-			;
+			ChessBoard testBoard = this.board.copy();
+			for (Location from: board.locations()) {
+				if (board.get(from) != null && board.get(from).getColour() == players.getCurrentPlayerChar()) {
+					Piece pieceToMove = board.get(from);
+					List<Location> moveTo = pieceToMove.getPossibleMoves(board);
+					for (Location to : moveTo) {
+						testBoard.movePiece(from, to);
+						
+						players.nextPlayer();
+						
+						GameState state = determineState(testBoard);
+						
+						// If the king is not in danger in the opposing position, the check has successfully been blocked
+						// and the move is legal.
+						if (state != GameState.CHECK) {
+							possibleMoves.add(new ChessMove(from, to, pieceToMove));
+						}
+						// Move the piece back to prepare to test next move
+						testBoard.movePiece(to, from);
+						players.nextPlayer();
+					}
+				}
+			}
 		}
         return possibleMoves;
 	}
+	
+	
+	
 
 
 
@@ -207,5 +231,6 @@ public class Chess extends ChessMoveGame {
 	public String getName() {
 		return "Chess";
 	}
+
 
 }

@@ -6,6 +6,7 @@ import inf101.chess.pieces.Piece;
 import inf101.grid.Grid;
 import inf101.grid.GridDirection;
 import inf101.grid.GridLocationIterator;
+import inf101.grid.IGrid;
 import inf101.grid.Location;
 
 /**
@@ -200,9 +201,13 @@ public class ChessBoard {
 	 * Makes a shallow copy of the board
 	 */
 	public ChessBoard copy() {
-		ChessBoard board = new ChessBoard(grid.numRows(), grid.numColumns());
-		grid.fillCopy(board.grid);
-		return board;
+		ChessBoard newBoard = new ChessBoard(grid.numRows(), grid.numColumns());
+		for (Location loc: this.locations()) {
+			if (get(loc) != null) {
+				newBoard.setPiece(loc, get(loc));
+			}
+		}
+		return newBoard;
 	}
 
 	public GridLocationIterator locations() {

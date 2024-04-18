@@ -1,5 +1,6 @@
 package inf101.sem2.game;
 
+import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.grid.ChessMove;
@@ -38,7 +39,7 @@ public abstract class ChessMoveGame extends ChessGame{
 		
 		// Check that piece in first location is the players piece
 		Location from = move.getFrom();
-		if (!(board.getPlayerChar(from) == getCurrentPlayer().getSymbol())) {
+		if (!(board.getPlayerChar(from) == getCurrentPlayerChar())) {
 			return false;
 		}
 		
@@ -58,15 +59,16 @@ public abstract class ChessMoveGame extends ChessGame{
 		return true;
 	}
 	
-	/**
-	 * This method performs a move for the current player and advances to next
-	 * player. This method is called for moves that are not captures.
-	 * 
-	 * Credit to the makeMove function in BlobWars.
-	 *
-	 * @param loc
-	 */
-	public void makeMove(ChessMove move, GameState state) {
+	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
+		// Handle the different cases differently.
+		/**
+		 * This method performs a move for the current player and advances to next
+		 * player. 
+		 * Credit to the makeMove function in BlobWars.
+		 *
+		 * @param loc
+		 */
+	public void makeMove(ChessMove move, GameState state) {		
 		if (!validMove(move))
 			throw new IllegalArgumentException("Cannot make move:\n" + move);
 

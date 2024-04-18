@@ -2,6 +2,7 @@ package inf101.sem2.game;
 
 import java.util.List;
 
+import inf101.chess.logic.GameStateDeterminer;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.sem2.player.ChessPlayer;
@@ -63,17 +64,21 @@ public abstract class ChessGame {
 			try {
 				displayPlayerTurn();
 				// TODO: Use this to declare either stalemate or checkmate
-				// If player has no valid moves, skip to next player
 				if (getPossibleMoves().isEmpty()) {
-					players.nextPlayer();
+					// players.nextPlayer();
 					continue;
 				}
 
 				// Get move from player and execute if valid
 				ChessMove move = getCurrentPlayer().getMove(copy());
+				
 				if (validMove(move)) {
-					makeMove(move, state);
+					makeMove(move, this.state);
 					players.nextPlayer();
+					this.state = determineState(this.board);
+					if (this.state == GameState.CHECK) {
+						System.out.println("CHECK!");
+					}
 				} else {
 					graphics.displayMessage("That is an invalid move");
 				}
@@ -92,6 +97,12 @@ public abstract class ChessGame {
 		}
 
 	}
+	
+	public GameState determineState(ChessBoard inputBoard) {
+		GameStateDeterminer determiner = new GameStateDeterminer(inputBoard, getCurrentPlayerChar());
+		return determiner.determineCheck();
+	}
+	
 
 	/**
 	 * When players are asked to make a move we don't want them to change the
@@ -110,6 +121,10 @@ public abstract class ChessGame {
 		ChessGame gameCopy = copy();
 		gameCopy.graphics = fakeGraphics;
 		return gameCopy;
+	}
+	
+	public GameState getState() {
+		return this.state;
 	}
 
 	/**
@@ -248,6 +263,10 @@ public abstract class ChessGame {
 
 	public void nextPlayer() {
 		players.nextPlayer();
+	}
+	
+	public char getCurrentPlayerChar() {
+		return players.getCurrentPlayerChar();
 	}
 
 	public ChessPlayer getCurrentPlayer() {

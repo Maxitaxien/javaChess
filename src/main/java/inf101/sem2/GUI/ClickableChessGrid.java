@@ -16,6 +16,7 @@ import inf101.grid.Grid;
 import inf101.grid.Location;
 import inf101.sem2.game.ChessBoard;
 import inf101.sem2.player.ChessPlayer;
+import inf101.sem2.player.ChessPlayerList;
 /**
  * This class is a grid of Game panels.
  * This is also a MouseListener for all those GamePanels
@@ -47,19 +48,23 @@ public class ClickableChessGrid extends JPanel {
 	 * Locations of panels that represent possible moves for
 	 * the selected piece
 	 */
-	private List<Location> previousPossibleMoves;
+	private Iterable<Location> previousPossibleMoves;
 
 	private boolean confirmMove;
+	
+	ChessPlayerList players;
 
 	// HashMap is something we will learn about in INF102
 	HashMap<Character, Color> colorMap;
 
-	public ClickableChessGrid(ChessBoard board, Iterable<ChessPlayer> players, List<Color> colours) {
+	public ClickableChessGrid(ChessBoard board, ChessPlayerList players, List<Color> colours) {
 		this.board = board;
 		adapter = new ClickableGridListener();
 
 		// assign colors to the players
 		setColors(colours);
+		
+		this.players = players;
 
 		// create clickable panels
 		int rows = board.numRows();
@@ -183,7 +188,7 @@ public class ClickableChessGrid extends JPanel {
 	                } else {
 	                    Piece piece = board.get(currentLocation);
 	                    // TODO: Only do this for current player
-	                    if (piece != null ) {
+	                    if (piece != null && players.getCurrentPlayerChar() != piece.getColour()) {
 	                        List<Location> possibleMoves = piece.getPossibleMoves(board);
 	                        for (Location loc : possibleMoves) {
 	                            GamePanel panel = clickablePanels.get(loc);
