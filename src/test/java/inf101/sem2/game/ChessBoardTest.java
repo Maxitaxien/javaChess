@@ -7,10 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import inf101.chess.model.ChessBoard;
 import inf101.chess.pieces.Pawn;
+import inf101.chess.player.ChessPlayer;
+import inf101.chess.player.ai.DumbChessPlayer;
 import inf101.grid.Location;
-import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.ai.DumbChessPlayer;
 
 /*
  * Inspired by the tests used in GameBoardTest.

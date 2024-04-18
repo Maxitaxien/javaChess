@@ -1,4 +1,4 @@
-package inf101.sem2.player;
+package inf101.chess.player;
 
 public class GameEndedException extends RuntimeException {
 

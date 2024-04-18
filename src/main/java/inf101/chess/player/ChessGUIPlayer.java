@@ -1,13 +1,12 @@
-package inf101.sem2.player;
+package inf101.chess.player;
 
 import javax.swing.JOptionPane;
 
+import inf101.chess.model.ChessGame;
 import inf101.chess.pieces.Piece;
+import inf101.chess.view.ChessGUI;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.sem2.GUI.ChessGUI;
-import inf101.sem2.game.ChessGame;
-import inf101.sem2.game.ChessMoveGame;
 /**
  * This Player should be used if one wants input from GUI.
  * The game loop will stop when reaching an instance of GuiPlayer
@@ -59,7 +58,7 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	    }
 	}
 	
-	private boolean hasValidMove(ChessMoveGame game, ChessMove move) {
+	private boolean hasValidMove(ChessGame game, ChessMove move) {
 		return game.validMove(move);
 	}
 

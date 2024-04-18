@@ -3,8 +3,9 @@ package inf101.chess.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
+import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
 
 public class Pawn extends Piece {
 	private boolean hasMoved = false;
@@ -31,7 +32,7 @@ public class Pawn extends Piece {
 	}
 
 	@Override
-	public List<Location> getPossibleMoves(ChessBoard board) {
+	public List<Location> getPossibleMoves(IChessBoard board) {
 		List<Location> possibleMoves = new ArrayList<>();
 		int currentRow = this.getLocation().row;
 		int currentCol = this.getLocation().col;
@@ -42,7 +43,7 @@ public class Pawn extends Piece {
 		
 		// Normal move down the board
 		newLoc = new Location(currentRow + direction, currentCol);
-		if (board.isOnBoard(newLoc) && board.get(newLoc) == null) {
+		if (board.isOnBoard(newLoc) && board.squareEmpty(newLoc)) {
 			possibleMoves.add(newLoc);
 		}
 		
@@ -59,7 +60,7 @@ public class Pawn extends Piece {
 		
 		newLoc = new Location(currentRow + direction, currentCol);
 		// Initial move
-		if (!hasMoved() && board.isOnBoard(newLoc) && board.get(newLoc) == null) {
+		if (!hasMoved() && board.isOnBoard(newLoc) && board.squareEmpty(newLoc)) {
 			possibleMoves.add(new Location(currentRow + direction*2, currentCol));
 		}
 		

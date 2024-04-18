@@ -1,10 +1,11 @@
-package inf101.sem2.GUI;
+package inf101.chess.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -12,11 +13,12 @@ import java.util.List;
 import javax.swing.JPanel;
 
 import inf101.chess.pieces.Piece;
+import inf101.grid.ChessMove;
 import inf101.grid.Grid;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
-import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.ChessPlayerList;
+import inf101.chess.logic.GameStateDeterminer;
+import inf101.chess.model.ChessBoard;
+import inf101.chess.player.ChessPlayerList;
 /**
  * This class is a grid of Game panels.
  * This is also a MouseListener for all those GamePanels
@@ -48,13 +50,10 @@ public class ClickableChessGrid extends JPanel {
 	 * Locations of panels that represent possible moves for
 	 * the selected piece
 	 */
-	private Iterable<Location> previousPossibleMoves;
-
-	private boolean confirmMove;
+	private List<Location> previousPossibleMoves;
 	
 	ChessPlayerList players;
 
-	// HashMap is something we will learn about in INF102
 	HashMap<Character, Color> colorMap;
 
 	public ClickableChessGrid(ChessBoard board, ChessPlayerList players, List<Color> colours) {
@@ -97,9 +96,8 @@ public class ClickableChessGrid extends JPanel {
 
 	/**
 	 * Should be called after a click to update the UI to reflect the current game
-	 * state
+	 * state. 
 	 * 
-	 * TODO: Set a colour to each board location that represents a background colour (fix this in ChessBoard)
 	 */
 	public void updateGui() {
 	    for (Location loc : board.locations()) {
@@ -178,39 +176,51 @@ public class ClickableChessGrid extends JPanel {
 	            try {
 	                GamePanel currentPanel = (GamePanel) me.getSource();
 	                Location currentLocation = clickablePanels.locationOf(currentPanel);
+	                Piece piece = board.get(currentLocation);
 
-	                // Clear previous possible moves
-	                clearPreviousPossibleMoves();
+	                // Check if there's already a selection for a move
+	                if (!selectedPanels.isEmpty()) {
+	                    // Check if the second click is on a possible move location
+	                    if (previousPossibleMoves.contains(currentLocation)) {
+	                        selectedPanels.add(currentLocation); 
+	                        if (selectedPanels.size() == 2) {
+	                            clearPreviousPossibleMoves();
+	                            updateGui();
+	                            return; 
+	                        }
+	                    } else {
+	                        // Not a valid move location, clear and restart the selection
+	                        clearPreviousPossibleMoves();
+	                        deselectPanels();
+	                    }
+	                }
 
-	                // Check and handle move confirmation
-	                if (selectedPanels.contains(currentLocation) && !confirmMove) {
-	                    confirmMove = true;
-	                } else {
-	                    Piece piece = board.get(currentLocation);
-	                    // TODO: Only do this for current player
-	                    if (piece != null && players.getCurrentPlayerChar() != piece.getColour()) {
-	                        List<Location> possibleMoves = piece.getPossibleMoves(board);
-	                        for (Location loc : possibleMoves) {
-	                            GamePanel panel = clickablePanels.get(loc);
+	                // Selection process
+	                if (piece != null && players.getCurrentPlayerChar() == piece.getColour()) {
+	                    selectedPanels.clear();
+	                    selectedPanels.add(currentLocation);
+	                    currentPanel.setSelected(true);
+	                    List<Location> possibleMoves = piece.getPossibleMoves(board);
+	                    for (Location loc : possibleMoves) {
+	                        GamePanel panel = clickablePanels.get(loc);
+	                        GameStateDeterminer determiner = new GameStateDeterminer(board, players.getCurrentPlayerChar());
+	                        if (!determiner.kingInDangerAfterMove(
+	                        			new ChessMove(currentLocation, loc, piece))) {
 	                            if (panel != null) {
 	                                panel.setPossibleMove(true);
 	                            }
+		                        previousPossibleMoves.add(loc);
 	                        }
-	                        previousPossibleMoves = new ArrayList<>(possibleMoves);
 	                    }
-	                }
-	                setSelected(currentPanel);
-
-	                if (confirmMove) {
+	                } else {
+	                    // Clear selections if own piece is not clicked
+	                    clearPreviousPossibleMoves();
 	                    deselectPanels();
-	                    confirmMove = false;
 	                }
 	                updateGui();
 	            } catch (Exception e) {
 	                System.err.println(e.getMessage());
 	            }
-	        } else {
-	            System.err.println("Clicked on wrong thing: " + me.getSource());
 	        }
 	    }
 

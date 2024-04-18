@@ -1,4 +1,4 @@
-package inf101.sem2.player;
+package inf101.chess.player;
 
 /**
  * This class takes care of the name and symbol handling in Player classes.

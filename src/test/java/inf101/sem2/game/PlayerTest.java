@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 
 import inf101.GetStarted;
-import inf101.sem2.player.AbstractPlayer;
-import inf101.sem2.player.Player;
-import inf101.sem2.player.ai.DumbPlayer;
+import inf101.chess.main.player.AbstractPlayer;
+import inf101.chess.main.player.Player;
+import inf101.chess.player.ai.DumbPlayer;
 
 import org.junit.jupiter.api.Test;
 

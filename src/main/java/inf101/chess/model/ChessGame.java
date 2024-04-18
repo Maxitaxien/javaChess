@@ -1,12 +1,15 @@
-package inf101.sem2.game;
+package inf101.chess.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import inf101.chess.logic.GameStateDeterminer;
+import inf101.chess.pieces.King;
+import inf101.chess.pieces.Piece;
+import inf101.chess.player.ChessPlayer;
+import inf101.chess.player.ChessPlayerList;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.ChessPlayerList;
 
 /**
  * This class models turn based games where each round the current player gets
@@ -14,7 +17,6 @@ import inf101.sem2.player.ChessPlayerList;
  * Games of this sort has win/tie/loose conditions and rules for where it is
  * possible to place pieces.
  * <p>
- * This type of games does not allow players to move pieces unless
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
@@ -64,9 +66,14 @@ public abstract class ChessGame {
 			try {
 				displayPlayerTurn();
 				// TODO: Use this to declare either stalemate or checkmate
-				if (getPossibleMoves().isEmpty()) {
-					// players.nextPlayer();
-					continue;
+				if (getMoves().isEmpty()) {
+					this.state = determineState(this.board);
+					if (this.state == GameState.CHECK) {
+						System.out.println("CHECKMATE!");
+					}
+					else {
+						System.out.println("STALEMATE!");
+					}
 				}
 
 				// Get move from player and execute if valid
@@ -135,18 +142,31 @@ public abstract class ChessGame {
 	 * @param target
 	 */
 	protected void copyTo(ChessGame target) {
-		target.board = board.copy();
+		target.board = (ChessBoard) board.copy(false);
 		target.graphics = graphics;
 		target.players = players.copy();
 	}
 
-	/**
-	 * This method performs a move for the current player and advances to next
-	 * player. This is handled differently based on the state of the game.
-	 *
-	 * @param move the move to make
-	 */
-	public abstract void makeMove(ChessMove move, GameState state);
+	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
+			// Handle the different cases differently.
+			/**
+			 * This method performs a move for the current player and advances to next
+			 * player. 
+			 * Credit to the makeMove function in BlobWars.
+			 *
+			 * @param loc
+			 */
+	public void makeMove(ChessMove move, GameState state) {		
+		if (!validMove(move))
+			throw new IllegalArgumentException("Cannot make move:\n" + move);
+
+		board.get(move.getFrom()).moved();
+		board.movePiece(move.getFrom(), move.getTo());
+		if (move.isCastle()) {
+			board.get(move.getRookFrom()).moved();
+			board.movePiece(move.getRookFrom(), move.getRookTo());
+		}
+	}
 
 
 	/**
@@ -157,8 +177,102 @@ public abstract class ChessGame {
 	 * @param move
 	 * @return true if valid move. False if not.
 	 */
-	public abstract boolean validMove(ChessMove move);
+	/**
+	 * Checks if the given move is valid. As this is calculated differently
+	 * for each piece, this is calculated in the Piece classes.
+	 * TODO: Determine if move is a capture
+	 * 
+	 * @param move the move to make
+	 * @return true if valid move. False if not.
+	 */
+	
+	public boolean validMove(ChessMove move) {
+	    // Preliminary checks for null move or incorrect starting position
+	    if (move == null || board.get(move.getFrom()) == null || board.get(move.getFrom()).getColour() != getCurrentPlayerChar()) {
+	        return false;
+	    }
 
+	    // Check if the destination is occupied by an opponent's piece for capture
+	    Piece destinationPiece = board.get(move.getTo());
+	    if (destinationPiece != null && destinationPiece.getColour() == getCurrentPlayerChar()) {
+	        return false; // Cannot capture own piece
+	    }
+
+	    // Simulate the move and check if king will be in danger
+	    GameStateDeterminer determiner = new GameStateDeterminer(board, getCurrentPlayerChar());
+	
+	    if (determiner.kingInDangerAfterMove(move)) {
+	        return false; // Move leaves king in check
+	    }
+
+	    // Additional checks for the legality of the move per piece type
+	    return board.get(move.getFrom()).getPossibleMoves(board).contains(move.getTo());
+	}
+	
+	/**
+	 * Look through grid. When we find a piece, calculate it's 
+	 * legal moves. 
+	 * 
+	 */
+    public List<ChessMove> getMoves() {
+		List<ChessMove> possibleMoves = new ArrayList<>();
+	        for (Location from: board.locations()) {
+	        	if (board.get(from) != null && board.get(from).getColour() == players.getCurrentPlayerChar()) {
+	        		Piece pieceToMove = board.get(from);
+	        		List<Location> moveTo = pieceToMove.getPossibleMoves(board);
+	        		// If the move is not made by the king, just add all the moves as normal:
+	        		if (pieceToMove.getSymbol() != 'K') {
+		        		for (Location to : moveTo) {
+		        			ChessMove move = new ChessMove(from, to, pieceToMove);
+		        			if (validMove(move)) {
+		        				possibleMoves.add(move);
+		        			}
+		        		}
+	        		}
+
+	        		// If the move is being made by the king, check if it is a castle and handle these differently
+	        		// We can check this by seeing if the valid move moves the king more than one column
+	        		else {
+	        			for (Location to : moveTo) {
+	        				ChessMove move;
+	        				if (from.col - to.col < -1) {
+	        					// Indicates queenside castling, which means the rook is at four to the right
+	        					// from the current king position
+	        					Location oldRookLocation = new Location(to.row, from.col + 4);
+	        					Location newRookLocation = new Location(to.row, from.col + 1);
+	        					move = new ChessMove(from, to, pieceToMove, 
+	        							oldRookLocation, newRookLocation);
+	        					move.castled();
+	        				}
+	        				else if (from.col - to.col > 1) {
+	        					// Indicates kingside castling, which means the rook is at three to the left
+	        					// from the current king position
+	        					Location oldRookLocation = new Location(to.row, from.col - 3);
+	        					Location newRookLocation = new Location(to.row, from.col - 1);
+	        					move = new ChessMove(from, to, pieceToMove, 
+	        							oldRookLocation, newRookLocation);
+	        					move.castled();
+	        				}
+	        				else {
+	        					// Indicates a normal move
+	        					move = new ChessMove(from, to, pieceToMove);
+	        				}
+	        				if (validMove(move)) {
+		        				possibleMoves.add(move);
+	        				}
+	        					
+	        				}
+        					
+        				}
+        			}
+        		}	        		
+        return possibleMoves;
+	}
+    
+    
+
+
+    
 	/**
 	 * Adds a player to the game.
 	 * 
@@ -172,7 +286,7 @@ public abstract class ChessGame {
 	 * Gets a copy of the GameBoard.
 	 */
 	public ChessBoard getGameBoard() {
-		return board.copy();
+		return (ChessBoard) board.copy(false);
 	}
 
 	/**
@@ -185,7 +299,7 @@ public abstract class ChessGame {
 	 * @return true if it is a valid move, false otherwise.
 	 */
 	public boolean canPlace(Location loc) {
-		return board.isEmpty(loc);
+		return board.squareEmpty(loc);
 	}
 
 	/**
@@ -277,8 +391,6 @@ public abstract class ChessGame {
 		players.setCurrentPlayer(player);
 	}
 
-	public abstract List<ChessMove> getPossibleMoves();
-
 	public ChessGraphics getGraphics() {
 		return graphics;
 	}
@@ -286,7 +398,7 @@ public abstract class ChessGame {
 	public abstract String getName();
 
 	public void restart() {
-		board.clear();
+		board.clearBoard();
 		players.restart();
 		graphics.display(board);
 		graphics.displayMessage("Welcome!");

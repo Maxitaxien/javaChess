@@ -1,12 +1,13 @@
-package inf101.sem2.player.ai;
+package inf101.chess.player.ai;
 
 import java.util.Collections;
 import java.util.List;
 
+import inf101.chess.model.ChessGame;
+import inf101.chess.player.AbstractChessPlayer;
+import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.grid.Move;
-import inf101.sem2.game.Game;
-import inf101.sem2.player.AbstractPlayer;
 
 /**
  * This Player chooses a random move among all the possible moves.
@@ -17,19 +18,19 @@ import inf101.sem2.player.AbstractPlayer;
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-public class RandomPlayer extends AbstractPlayer {
+public class RandomChessPlayer extends AbstractChessPlayer {
 
-	public RandomPlayer(char piece, String name) {
+	public RandomChessPlayer(char piece, String name) {
 		super(piece, name);
 	}
 
-	public RandomPlayer(char piece) {
+	public RandomChessPlayer(char piece) {
 		super(piece, "Random player");
 	}
 
 	@Override
-	public <T> T getMove(Game<T> game) {
-		List<T> moves = game.getPossibleMoves();
+	public ChessMove getMove(ChessGame game) {
+		List<ChessMove> moves = game.getPossibleMoves();
 		if (moves.isEmpty()) {
 			throw new IllegalStateException("No possible moves to choose, game should have ended!");
 		}

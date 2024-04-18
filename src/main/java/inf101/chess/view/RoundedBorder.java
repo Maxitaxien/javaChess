@@ -1,4 +1,4 @@
-package inf101.sem2.GUI;
+package inf101.chess.view;
 
 import java.awt.Component;
 import java.awt.Graphics;

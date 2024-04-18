@@ -2,8 +2,9 @@ package inf101.chess.pieces;
 
 import java.util.List;
 
+import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
 
 public abstract class Piece {
 	private char colour;
@@ -48,7 +49,6 @@ public abstract class Piece {
 	 */
 	public void movePiece(Location to) {
 		this.loc = to;
-		this.moved();
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public abstract class Piece {
 	 * Some pieces need the board size to calculate possible moves.
 	 * @return a list of possible locations the piece can move to
 	 */
-	public abstract List<Location> getPossibleMoves(ChessBoard board);
+	public abstract List<Location> getPossibleMoves(IChessBoard board);
 
 	/**
 	 * Moves the piece and updates the hasMoved attribute if the piece has one.
@@ -69,4 +69,9 @@ public abstract class Piece {
 	 * @return boolean indicating if the piece has previously moved
 	 */
 	public abstract boolean hasMoved();
+	
+	@Override
+	public String toString() {
+		return "Piece: " + getSymbol()+ getColour();
+	}
 }

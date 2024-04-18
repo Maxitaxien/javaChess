@@ -1,6 +1,6 @@
 package inf101.chess.logic;
 
-import inf101.sem2.game.GameState;
+import inf101.chess.model.GameState;
 
 public class CheckRule {
 	public static GameState isCheck() {

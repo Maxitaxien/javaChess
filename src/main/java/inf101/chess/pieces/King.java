@@ -4,8 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inf101.chess.logic.CastleRule;
+import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
 
 public class King extends Piece {
 	private boolean hasCastled = false;
@@ -24,7 +25,7 @@ public class King extends Piece {
 	}
 
 	@Override
-	public List<Location> getPossibleMoves(ChessBoard board) {
+	public List<Location> getPossibleMoves(IChessBoard board) {
 		List<Location> possibleMoves = new ArrayList<>();
 		int currentRow = this.getLocation().row;
 		int currentCol = this.getLocation().col;
@@ -37,7 +38,7 @@ public class King extends Piece {
 					int newRow = currentRow + i;
 					int newCol = currentCol + j;
 					newLoc = new Location(newRow, newCol);
-					if (board.isOnBoard(newLoc) && (board.isEmpty(newLoc) || board.isOpponent(getColour(), newLoc))) {
+					if (board.isOnBoard(newLoc) && (board.squareEmpty(newLoc) || board.isOpponent(getColour(), newLoc))) {
 						possibleMoves.add(newLoc);
 					}
 				}

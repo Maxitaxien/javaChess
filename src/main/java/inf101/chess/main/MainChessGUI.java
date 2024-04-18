@@ -1,6 +1,6 @@
-package inf101.sem2;
+package inf101.chess.main;
 
-import inf101.sem2.GUI.ChessMenu;
+import inf101.chess.view.ChessMenu;
 
 public class MainChessGUI {
 	public static void main(String[] args) {

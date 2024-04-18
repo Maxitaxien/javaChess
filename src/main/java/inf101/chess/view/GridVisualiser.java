@@ -1,6 +1,6 @@
-package inf101.sem2.GUI;
-import java.awt.Color;
+package inf101.chess.view;
 
+import inf101.chess.model.ChessBoard;
 import inf101.grid.Location;
 
 public interface GridVisualiser {
@@ -9,7 +9,7 @@ public interface GridVisualiser {
 	 * current selected piece
 	 * @param pieceLocation the location of the piece
 	 */
-    void showPossibleMoves(Location pieceLocation);
+    void showPossibleMoves(GamePanel panel, ChessBoard board, char playerColour);
     
     /**
      * Clears the current list of possible moves, 
@@ -26,5 +26,5 @@ public interface GridVisualiser {
      * 
      * @param location the Location of the panel to highlight
      */
-    void highlightSelectedPanel(Location location, Color color);
+    void highlightSelectedPanel(GamePanel panel, char playerColour);
 }

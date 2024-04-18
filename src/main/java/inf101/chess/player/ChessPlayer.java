@@ -1,9 +1,9 @@
-package inf101.sem2.player;
+package inf101.chess.player;
 
+import inf101.chess.model.ChessGame;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.grid.Move;
-import inf101.sem2.game.ChessGame;
 
 /**
  * Players has only one method that is specific to the game they play.

@@ -3,8 +3,8 @@ package inf101.chess.pieces;
 import java.util.List;
 
 import inf101.chess.logic.DirectionalCalculator;
+import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
 
 public class Bishop extends Piece{
 	public Bishop(char colour, Location loc) {
@@ -12,7 +12,7 @@ public class Bishop extends Piece{
 	}
 
 	@Override
-	public List<Location> getPossibleMoves(ChessBoard board) {
+	public List<Location> getPossibleMoves(IChessBoard board) {
 		DirectionalCalculator calculator = new DirectionalCalculator();
 		return calculator.calculateDiagonal(getLocation(), board, getColour());
 	}

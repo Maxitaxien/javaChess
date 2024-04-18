@@ -1,4 +1,4 @@
-package inf101.sem2.game;
+package inf101.chess.model;
 
 public class ChessDummyGraphics implements ChessGraphics {
 

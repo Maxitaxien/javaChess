@@ -1,4 +1,4 @@
-package inf101.sem2.GUI;
+package inf101.chess.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -125,8 +125,12 @@ public class GamePanel extends JPanel {
 	}
 	
 	public void setPiece(Piece piece) {
-        this.pieceToDraw = piece;  // Update the piece
-        repaint();  // Repaint to reflect the new piece
+        this.pieceToDraw = piece;  
+        repaint(); 
     }
+	
+	public Piece getPiece() {
+		return this.pieceToDraw;
+	}
 
 }

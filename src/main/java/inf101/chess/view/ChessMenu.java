@@ -1,12 +1,10 @@
-package inf101.sem2.GUI;
+package inf101.chess.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -16,16 +14,14 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import inf101.sem2.game.ChessGame;
-import inf101.sem2.game.GameState;
+import inf101.chess.model.GameState;
+import inf101.chess.player.ChessGUIPlayer;
+import inf101.chess.player.ChessPlayerList;
+import inf101.chess.player.GameEndedException;
+import inf101.chess.player.RestartException;
+import inf101.chess.player.ai.AlphaBetaChessPlayer;
+import inf101.chess.player.ai.DumbChessPlayer;
 import inf101.sem2.game.games.Chess;
-import inf101.sem2.player.ChessPlayer;
-import inf101.sem2.player.GameEndedException;
-import inf101.sem2.player.ChessGUIPlayer;
-import inf101.sem2.player.RestartException;
-import inf101.sem2.player.ai.AlphaBetaChessPlayer;
-import inf101.sem2.player.ai.AlphaBetaPlayer;
-import inf101.sem2.player.ai.DumbPlayer;
 
 /**
  * This class represents a main menu with settings and an option
@@ -93,7 +89,7 @@ public class ChessMenu implements ActionListener {
 		char s1 = 'W';
 		char s2 = 'B';
 				
-		Iterable<ChessPlayer> players = getPlayers(s1, s2);
+		ChessPlayerList players = getPlayers(s1, s2);
 		ChessGUI graphics = new ChessGUI(players);
 		GameState initialState = GameState.ACTIVE;
 		
@@ -118,8 +114,8 @@ public class ChessMenu implements ActionListener {
 	 *
 	 * @return an Iterable of 2 Players
 	 */
-	public static Iterable<ChessPlayer> getPlayers(char s1, char s2) {
-		List<ChessPlayer> players = new ArrayList<>();
+	public static ChessPlayerList getPlayers(char s1, char s2) {
+		ChessPlayerList players = new ChessPlayerList();
 		// add player1
 		players.add(new ChessGUIPlayer(s1));
 

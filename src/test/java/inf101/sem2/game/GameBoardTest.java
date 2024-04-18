@@ -5,9 +5,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import inf101.GetStarted;
+import inf101.chess.main.player.Player;
+import inf101.chess.player.ai.DumbPlayer;
 import inf101.grid.Location;
-import inf101.sem2.player.Player;
-import inf101.sem2.player.ai.DumbPlayer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

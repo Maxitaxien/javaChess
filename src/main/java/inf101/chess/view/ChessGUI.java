@@ -1,4 +1,4 @@
-package inf101.sem2.GUI;
+package inf101.chess.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -18,13 +18,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import inf101.chess.model.ChessBoard;
+import inf101.chess.model.ChessGraphics;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
+import inf101.chess.player.ChessPlayer;
+import inf101.chess.player.ChessPlayerList;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
-import inf101.sem2.game.ChessGraphics;
-import inf101.sem2.player.ChessPlayer;
 
 /**
  * This class combines two buttons with a Clickable grid in one JFrame
@@ -39,13 +40,13 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	private JButton restartButton; // Button to restart the game
 	private JLabel statusMessage; // field for displaying message to user
 	private ClickableChessGrid board; // clickable grid for user input
-	private Iterable<ChessPlayer> players;
+	private ChessPlayerList players;
 	private JFrame frame;
 
 	public boolean wantRestart = false;
 	public boolean ended = false;
 
-	public ChessGUI(Iterable<ChessPlayer> players) {
+	public ChessGUI(ChessPlayerList players) {
 		this.players = players;
 		JPanel buttons = createButtonPanel();
 		statusMessage = new JLabel();
@@ -143,6 +144,9 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	    Location from = selectedPanels.get(0);
 	    Location to = selectedPanels.get(1);
 	    Piece piece = gameBoard.get(from);
+	    
+	    // Update the current player for the clickable panels as well, for possible move-showing purposes.
+	    board.players.nextPlayer();
 
 	    // Create a different kind of move if castling is attempted
 	    if (piece instanceof King && Math.abs(from.col - to.col) > 1) {

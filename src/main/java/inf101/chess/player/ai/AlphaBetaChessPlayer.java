@@ -1,9 +1,11 @@
-package inf101.sem2.player.ai;
+package inf101.chess.player.ai;
 
+import inf101.grid.ChessMove;
 import inf101.grid.Move;
-import inf101.sem2.game.Game;
-import inf101.sem2.player.AbstractPlayer;
-import inf101.sem2.player.Player;
+import inf101.chess.model.ChessGame;
+import inf101.chess.model.GameState;
+import inf101.chess.player.AbstractChessPlayer;
+import inf101.chess.player.ChessPlayer;
 
 /**
  * This AI is based on an algorithm that is not curriculum for INF101, but maybe
@@ -32,7 +34,7 @@ import inf101.sem2.player.Player;
  * @author Martin Vatshelle - martin.vatshelle@uib.no
 
  */
-public class AlphaBetaPlayer extends AbstractPlayer {
+public class AlphaBetaChessPlayer extends AbstractChessPlayer {
 	/**
 	 * Defines how many steps ahead the search should continue
 	 */
@@ -42,18 +44,18 @@ public class AlphaBetaPlayer extends AbstractPlayer {
      * maximize and who wants to minimize the score at a given move.
      * Needed to update <code>alpha</code> and <code>beta<\code>
      */
-    Player currentPlayer;
+    ChessPlayer currentPlayer;
 
-	public AlphaBetaPlayer(char piece, int level) {
+	public AlphaBetaChessPlayer(char piece, int level) {
 		super(piece, "AlphaBeta");
 		depth = level;
 	}
 
 	@Override
-	public <T> T getMove(Game<T> game) {
+	public ChessMove getMove(ChessGame game) {
 		game.displayMessage(name + " is thinking...");
         currentPlayer = game.getCurrentPlayer();
-		Strategy<T> best = bestMove(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		ChessStrategy best = bestMove(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return best.move;
 	}
 
@@ -64,20 +66,20 @@ public class AlphaBetaPlayer extends AbstractPlayer {
 	 * @param depth
 	 * @return
 	 */
-	private <T> Strategy<T> bestMove(Game<T> game, int depth, int alpha, int beta) {
-		Strategy<T> best = null;
+	private ChessStrategy bestMove(ChessGame game, int depth, int alpha, int beta) {
+		ChessStrategy best = null;
 		int bestScore = 0;
 
 		// try each possible strategy
-		for (T move : game.getPossibleMoves()) {
+		for (ChessMove move : game.getNormalMoves()) {
 			// make a copy of the game and try the move
-			Game<T> newGame = game.copyGameWithoutGraphics();
-			newGame.makeMove(move); // note that this changes the current player in the copy but not the real game
+			ChessGame newGame = game.copyGameWithoutGraphics();
+			newGame.makeMove(move, GameState.ACTIVE); // note that this changes the current player in the copy but not the real game
 			newGame.nextPlayer();
 
-			Strategy<T> current = null;
-			if (newGame.gameOver() || depth == 1 || newGame.getPossibleMoves().isEmpty()) { // No more moves can be made
-				current = new Strategy<T>(move, newGame);
+			ChessStrategy current = null;
+			if (newGame.gameOver() || depth == 1 || newGame.getNormalMoves().isEmpty()) { // No more moves can be made
+				current = new ChessStrategy(move, newGame);
 			} else {
 				// call recursively such that the opponent makes the move that is best for him
 				// change the sign since this is the score of the best move for opponent
@@ -93,7 +95,7 @@ public class AlphaBetaPlayer extends AbstractPlayer {
 			}
             // Update alpha and beta based on if the player wants
             // to maximize or minimize move choice
-            /*if (game.getCurrentPlayer().equals(currentPlayer)) {
+            if (game.getCurrentPlayer().equals(currentPlayer)) {
                 alpha = Math.max(alpha, bestScore);
             }
             else {
@@ -101,7 +103,6 @@ public class AlphaBetaPlayer extends AbstractPlayer {
             }
             if (beta <= alpha)
                 break;
-				*/
 		}
 		if (best == null) {
 			System.err.println("This should not happen! No moves possible?");
@@ -117,11 +118,11 @@ public class AlphaBetaPlayer extends AbstractPlayer {
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
-class Strategy<MoveType> {
-	MoveType move;
-	Game<MoveType> game;
+class ChessStrategy {
+	ChessMove move;
+	ChessGame game;
 
-	public Strategy(MoveType move, Game<MoveType> game) {
+	public ChessStrategy(ChessMove move, ChessGame game) {
 		this.move = move;
 		this.game = game;
 	}

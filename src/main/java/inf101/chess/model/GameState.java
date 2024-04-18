@@ -1,4 +1,4 @@
-package inf101.sem2.game;
+package inf101.chess.model;
 
 public enum GameState {
 	ACTIVE,

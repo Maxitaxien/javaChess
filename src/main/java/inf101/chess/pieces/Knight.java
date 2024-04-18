@@ -3,8 +3,9 @@ package inf101.chess.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
+import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
-import inf101.sem2.game.ChessBoard;
 
 public class Knight extends Piece {
 
@@ -13,7 +14,7 @@ public class Knight extends Piece {
 	}
 
 	@Override
-	public List<Location> getPossibleMoves(ChessBoard board) {
+	public List<Location> getPossibleMoves(IChessBoard board) {
 		List<Location> legalMoves = new ArrayList<>();
 		int currentRow = getLocation().row;
 		int currentCol = getLocation().col;
@@ -30,10 +31,10 @@ public class Knight extends Piece {
 					newLoc1 = new Location(currentRow + i, currentCol + j);
 					newLoc2 = new Location(currentRow + j, currentCol + i);
 					
-					if (board.isOpponent(getColour(), newLoc1) || board.isEmpty(newLoc1)) {
+					if (board.isOpponent(getColour(), newLoc1) || board.squareEmpty(newLoc1)) {
 						legalMoves.add(newLoc1);
 					}
-					if (board.isOpponent(getColour(), newLoc2) || board.isEmpty(newLoc2)) {
+					if (board.isOpponent(getColour(), newLoc2) || board.squareEmpty(newLoc2)) {
 						legalMoves.add(newLoc2);
 					}
 				}
