@@ -113,8 +113,6 @@ public interface IGrid<T> extends Iterable<T> {
 	 */
 	Iterable<Location> locations();
 
-	boolean canGo(Location from, GridDirection dir);
-
 	/**
 	 * Get the adjacent 8 cells to the given location <code>loc</code>
 	 * 

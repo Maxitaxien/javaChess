@@ -7,9 +7,9 @@ import inf101.grid.ChessMove;
 import inf101.grid.Location;
 import inf101.chess.model.ChessBoard;
 import inf101.chess.model.ChessGame;
-import inf101.chess.model.ChessGraphics;
 import inf101.chess.model.GameState;
 import inf101.chess.player.ChessPlayer;
+import inf101.chess.view.ChessGraphics;
 
 public class Chess extends ChessGame {
 	

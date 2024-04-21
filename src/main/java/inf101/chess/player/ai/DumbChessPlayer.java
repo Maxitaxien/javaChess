@@ -14,7 +14,7 @@ public class DumbChessPlayer extends AbstractChessPlayer {
 
 	@Override
 	public ChessMove getMove(ChessGame game) {
-		for (ChessMove move : game.getPossibleMoves()) {
+		for (ChessMove move : game.getMoves()) {
 			return move;
 		}
 		return null;

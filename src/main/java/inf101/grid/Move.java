@@ -49,17 +49,5 @@ public class Move implements Iterable<Location> {
         return locations.iterator();
     }
 
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        Iterator<Location> iterator = iterator();
-        while (iterator.hasNext()) {
-            Location loc = iterator.next();
-            builder.append(loc);
-            if (iterator.hasNext())
-                builder.append(" --> ");
-        }
-        return builder.toString();
-    }
 
 }

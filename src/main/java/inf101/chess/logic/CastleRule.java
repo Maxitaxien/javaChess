@@ -34,25 +34,26 @@ public class CastleRule {
 		if (isOnCorrectRow()) {
 			int row = king.getLocation().row;
 			int kingCol = king.getLocation().col;
-			Location kingSideRookLoc = new Location(row, kingCol - 3);
-			Location queenSideRookLoc = new Location(row, kingCol + 4);
+			Location kingSideRookLoc = new Location(row, kingCol + 3);
+			Location queenSideRookLoc = new Location(row, kingCol - 4);
 			
 			Piece kingSideRook = board.get(kingSideRookLoc);
 			Piece queenSideRook = board.get(queenSideRookLoc);
 			
+
 			if (kingSideRook != null) {
 				if (!kingSideRook.hasMoved() && 
-						squaresEmpty(row, kingCol - 1, kingCol - 2) &&
-						squaresSafe(row, kingCol - 1, kingCol - 2)) {
-					legalCastles.add(new Location(row, kingCol - 2));
+						squaresEmpty(row, kingCol + 1, kingCol + 2) &&
+						squaresSafe(row, kingCol, kingCol + 2)) {
+					legalCastles.add(new Location(row, kingCol + 2));
 				}
 			}
 			
 			if (queenSideRook != null) {
 				if (!queenSideRook.hasMoved() &&
-						squaresEmpty(row, kingCol + 1, kingCol + 3) &&
-						squaresSafe(row, kingCol + 1, kingCol + 3)) {
-					legalCastles.add(new Location(row, kingCol + 2));
+						squaresEmpty(row, kingCol - 1, kingCol - 3) &&
+						squaresSafe(row, kingCol, kingCol - 3)) {
+					legalCastles.add(new Location(row, kingCol - 2));
 				}
 			}
 		}
@@ -67,10 +68,10 @@ public class CastleRule {
 	 */
 	private boolean isOnCorrectRow() {
 		if (king.getColour() == 'W') {
-			return (king.getLocation().row == 0) ? true : false;
+			return (king.getLocation().row == board.numRows() -1) ? true : false;
 		}
 		else {
-			return (king.getLocation().row == board.numRows() - 1) ? true : false;
+			return (king.getLocation().row == 0) ? true : false;
 		}
 	}
 	

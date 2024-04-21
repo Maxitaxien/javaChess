@@ -39,7 +39,7 @@ public class Pawn extends Piece {
 		
 		Location newLoc;
 		
-		int direction = (getColour() == 'W') ? 1 : -1;
+		int direction = (getColour() == 'W') ? - 1 : 1;
 		
 		// Normal move down the board
 		newLoc = new Location(currentRow + direction, currentCol);
@@ -58,7 +58,7 @@ public class Pawn extends Piece {
 			possibleMoves.add(newLoc);
 		}
 		
-		newLoc = new Location(currentRow + direction, currentCol);
+		newLoc = new Location(currentRow + direction*2, currentCol);
 		// Initial move
 		if (!hasMoved() && board.isOnBoard(newLoc) && board.squareEmpty(newLoc)) {
 			possibleMoves.add(new Location(currentRow + direction*2, currentCol));

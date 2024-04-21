@@ -1,4 +1,7 @@
-package inf101.chess.model;
+package inf101.chess.player.ai;
+
+import inf101.chess.model.ChessBoard;
+import inf101.chess.view.ChessGraphics;
 
 public class ChessDummyGraphics implements ChessGraphics {
 

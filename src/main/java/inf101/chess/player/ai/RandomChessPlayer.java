@@ -6,9 +6,6 @@ import java.util.List;
 import inf101.chess.model.ChessGame;
 import inf101.chess.player.AbstractChessPlayer;
 import inf101.grid.ChessMove;
-import inf101.grid.Location;
-import inf101.grid.Move;
-
 /**
  * This Player chooses a random move among all the possible moves.
  * This player can play any game which implements the possibleMoves() method.
@@ -30,7 +27,7 @@ public class RandomChessPlayer extends AbstractChessPlayer {
 
 	@Override
 	public ChessMove getMove(ChessGame game) {
-		List<ChessMove> moves = game.getPossibleMoves();
+		List<ChessMove> moves = game.getMoves();
 		if (moves.isEmpty()) {
 			throw new IllegalStateException("No possible moves to choose, game should have ended!");
 		}

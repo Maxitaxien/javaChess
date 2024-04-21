@@ -150,10 +150,6 @@ public class Grid<T> implements IGrid<T> {
 		return cells.iterator();
 	}
 
-	@Override
-	public boolean canGo(Location from, GridDirection dir) {
-		return isOnGrid(from.getNeighbor(dir));
-	}
 
 	public boolean contains(Object obj) {
 		return cells.contains(obj);

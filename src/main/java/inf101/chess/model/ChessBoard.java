@@ -1,7 +1,5 @@
 package inf101.chess.model;
 
-import java.util.List;
-
 import inf101.chess.pieces.Bishop;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Knight;
@@ -10,9 +8,7 @@ import inf101.chess.pieces.Piece;
 import inf101.chess.pieces.Queen;
 import inf101.chess.pieces.Rook;
 import inf101.grid.Grid;
-import inf101.grid.GridDirection;
 import inf101.grid.GridLocationIterator;
-import inf101.grid.IGrid;
 import inf101.grid.Location;
 
 /**
@@ -42,49 +38,49 @@ public class ChessBoard implements IChessBoard{
 		for (int row = 1; row < 2; row++) {
 			for (int col = 0; col < cols; col++) {
 				Location loc = new Location(row, col);
-				setPiece(loc, new Pawn('W', loc));
+				setPiece(loc, new Pawn('B', loc));
 			}
 		}
 		
 		// White rooks
-		setPiece(new Location(0, 0), new Rook('W', new Location(0, 0)));
-		setPiece(new Location(0, cols - 1), new Rook('W', new Location(0, cols - 1)));
+		setPiece(new Location(0, 0), new Rook('B', new Location(0, 0)));
+		setPiece(new Location(0, cols - 1), new Rook('B', new Location(0, cols - 1)));
 		
 		// White knights
-		setPiece(new Location(0, 1), new Knight('W', new Location(0, 1)));
-		setPiece(new Location(0, cols - 2), new Knight('W', new Location(0, cols - 2)));
+		setPiece(new Location(0, 1), new Knight('B', new Location(0, 1)));
+		setPiece(new Location(0, cols - 2), new Knight('B', new Location(0, cols - 2)));
 		
 		// White bishops
-		setPiece(new Location(0, 2), new Bishop('W', new Location(0, 2)));
-		setPiece(new Location(0, cols - 3), new Bishop('W', new Location(0, cols - 3)));
+		setPiece(new Location(0, 2), new Bishop('B', new Location(0, 2)));
+		setPiece(new Location(0, cols - 3), new Bishop('B', new Location(0, cols - 3)));
 		
 		// White queen and king
-		setPiece(new Location(0, cols - 4), new Queen('W', new Location(0, cols - 4)));
-		setPiece(new Location(0, 3), new King('W', new Location(0, 3)));
+		setPiece(new Location(0, 3), new Queen('B', new Location(0, 3)));
+		setPiece(new Location(0, cols - 4), new King('B', new Location(0, cols - 4)));
 		
 		// Black pawns
 		for (int row = rows - 2; row > rows - 3; row--) {
 			for (int col = 0; col < cols; col++) {
 				Location loc = new Location(row, col);
-				setPiece(loc, new Pawn('B', loc));
+				setPiece(loc, new Pawn('W', loc));
 			}
 		}
 		
 		// Black rooks
-		setPiece(new Location(rows - 1, 0), new Rook('B', new Location(rows - 1, 0)));
-		setPiece(new Location(rows - 1, cols - 1), new Rook('B', new Location(rows - 1, cols - 1)));
+		setPiece(new Location(rows - 1, 0), new Rook('W', new Location(rows - 1, 0)));
+		setPiece(new Location(rows - 1, cols - 1), new Rook('W', new Location(rows - 1, cols - 1)));
 				
 		// Black knights
-		setPiece(new Location(rows - 1, 1), new Knight('B', new Location(rows -1, 1)));
-		setPiece(new Location(rows - 1, cols - 2), new Knight('B', new Location(rows - 1, cols - 2)));
+		setPiece(new Location(rows - 1, 1), new Knight('W', new Location(rows -1, 1)));
+		setPiece(new Location(rows - 1, cols - 2), new Knight('W', new Location(rows - 1, cols - 2)));
 				
 		// Black bishops
-		setPiece(new Location(rows -1, 2), new Bishop('B', new Location(rows - 1, 2)));
-		setPiece(new Location(rows - 1, cols - 3), new Bishop('B', new Location(rows - 1, cols - 3)));
+		setPiece(new Location(rows -1, 2), new Bishop('W', new Location(rows - 1, 2)));
+		setPiece(new Location(rows - 1, cols - 3), new Bishop('W', new Location(rows - 1, cols - 3)));
 				
 		// White queen and king
-		setPiece(new Location(rows - 1, cols - 4), new Queen('B', new Location(rows - 1, cols - 4)));
-		setPiece(new Location(rows - 1, 3), new King('B', new Location(rows - 1, 3)));	
+		setPiece(new Location(rows - 1, 3), new Queen('W', new Location(rows - 1, 3)));
+		setPiece(new Location(rows - 1, cols - 4), new King('W', new Location(rows - 1, cols - 4)));	
 	}
 	
 	@Override

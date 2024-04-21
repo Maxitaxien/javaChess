@@ -1,4 +1,5 @@
 package inf101.chess.pieces;
+import inf101.chess.model.IChessBoard;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -15,36 +16,64 @@ import inf101.grid.Location;
 public class DirectionalCalculationTest {
 	@Test
 	public void cardinalTest() {
-		;
+		IChessBoard board = new ChessBoard(4, 4);
+		Location pieceLocation = new Location(2, 2);
+		DirectionalCalculator calculator = new DirectionalCalculator();
+			
+		List<Location> expectedLocations = new ArrayList<>(Arrays.asList(
+										new Location(1, 2), new Location(0, 2), 
+										new Location(3, 2), new Location(2, 1), 
+										new Location(2, 0), new Location(2, 3)));
+			
+		assertEquals(expectedLocations, calculator.calculateCardinal(pieceLocation, board, 'W'));
 	}
 	
 	
 	@Test
 	public void diagonalTest() {
-		ChessBoard board = new ChessBoard(4, 4);
+		IChessBoard board = new ChessBoard(4, 4);
 		Location pieceLocation = new Location(2, 2);
 		DirectionalCalculator calculator = new DirectionalCalculator();
 		
 		List<Location> expectedLocations = new ArrayList<>(Arrays.asList(
-										new Location(1, 1), new Location(-1, -1), 
-										new Location(-2, -2), new Location(1, -1), 
-										new Location(-1, 1)));
+										new Location(3, 3), new Location(1, 1), 
+										new Location(0, 0), new Location(3, 1), 
+										new Location(1, 3)));
 		
-		assertEquals(expectedLocations, calculator.calculateDiagonal(pieceLocation, board));
+		assertEquals(expectedLocations, calculator.calculateDiagonal(pieceLocation, board, 'W'));
 	}
 	
 	@Test
-	public void diagonalUnevenBoardtest() {
-		ChessBoard board = new ChessBoard(5, 6);
-		Location pieceLocation = new Location(4, 4);
+	public void cardinalCollisionTest() {
+		IChessBoard board = new ChessBoard(4, 4);
+		Location pieceLocation = new Location(2, 2);
+		
+		// Surround the piece to check that it now cannot move cardinally
+		board.setPiece(new Location(2, 3), new Pawn('W', new Location(2, 3)));
+		board.setPiece(new Location(2, 1), new Pawn('W', new Location(2, 1)));
+		board.setPiece(new Location(3, 2), new Pawn('W', new Location(3, 2)));
+		board.setPiece(new Location(1, 2), new Pawn('W', new Location(1, 2)));
+		
 		DirectionalCalculator calculator = new DirectionalCalculator();
+		List<Location> legalMoves = calculator.calculateCardinal(pieceLocation,  board,  'W');
+		assertEquals(legalMoves.size(), 0);
 		
-		List<Location> expectedLocations = new ArrayList<>(Arrays.asList(
-										new Location(-1, -1), new Location(-2, -2), 
-										new Location(-3, -3), new Location(-4, -4), 
-										new Location(-1, 1)));
-		
-		assertEquals(expectedLocations, calculator.calculateDiagonal(pieceLocation, board));
 	}
 	
+	@Test
+	public void diagonalCollisionTest() {
+		IChessBoard board = new ChessBoard(4, 4);
+		Location pieceLocation = new Location(2, 2);
+		
+		// Surround the piece to check that it now cannot move diagonally
+		board.setPiece(new Location(3, 3), new Pawn('W', new Location(3, 3)));
+		board.setPiece(new Location(1, 1), new Pawn('W', new Location(1, 1)));
+		board.setPiece(new Location(1, 3), new Pawn('W', new Location(1, 3)));
+		board.setPiece(new Location(3, 1), new Pawn('W', new Location(3, 1)));
+		
+		DirectionalCalculator calculator = new DirectionalCalculator();
+		List<Location> legalMoves = calculator.calculateDiagonal(pieceLocation,  board,  'W');
+		assertEquals(legalMoves.size(), 0);
+		
+	}
 }

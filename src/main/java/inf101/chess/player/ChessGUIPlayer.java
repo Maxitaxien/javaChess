@@ -39,6 +39,7 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	        ChessMove move = gui.getMove(game.getGameBoard());
 	        
 	        if (game.validMove(move)) {
+	        	
 	            return move;
 	        }
 	        

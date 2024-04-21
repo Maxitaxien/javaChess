@@ -8,15 +8,14 @@ import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.chess.player.ChessPlayer;
 import inf101.chess.player.ChessPlayerList;
+import inf101.chess.player.ai.ChessDummyGraphics;
+import inf101.chess.view.ChessGraphics;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 
 /**
  * This class models turn based games where each round the current player gets
  * to place one piece.
- * Games of this sort has win/tie/loose conditions and rules for where it is
- * possible to place pieces.
- * <p>
  *
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
@@ -65,7 +64,6 @@ public abstract class ChessGame {
 		while (!gameOver()) {
 			try {
 				displayPlayerTurn();
-				// TODO: Use this to declare either stalemate or checkmate
 				if (getMoves().isEmpty()) {
 					this.state = determineState(this.board);
 					if (this.state == GameState.CHECK) {
@@ -82,7 +80,9 @@ public abstract class ChessGame {
 				if (validMove(move)) {
 					makeMove(move, this.state);
 					players.nextPlayer();
+					
 					this.state = determineState(this.board);
+					
 					if (this.state == GameState.CHECK) {
 						System.out.println("CHECK!");
 					}
@@ -159,7 +159,7 @@ public abstract class ChessGame {
 	public void makeMove(ChessMove move, GameState state) {		
 		if (!validMove(move))
 			throw new IllegalArgumentException("Cannot make move:\n" + move);
-
+		
 		board.get(move.getFrom()).moved();
 		board.movePiece(move.getFrom(), move.getTo());
 		if (move.isCastle()) {
@@ -177,10 +177,10 @@ public abstract class ChessGame {
 	 * @param move
 	 * @return true if valid move. False if not.
 	 */
+	
 	/**
 	 * Checks if the given move is valid. As this is calculated differently
 	 * for each piece, this is calculated in the Piece classes.
-	 * TODO: Determine if move is a capture
 	 * 
 	 * @param move the move to make
 	 * @return true if valid move. False if not.
@@ -236,19 +236,21 @@ public abstract class ChessGame {
 	        			for (Location to : moveTo) {
 	        				ChessMove move;
 	        				if (from.col - to.col < -1) {
-	        					// Indicates queenside castling, which means the rook is at four to the right
+	        					// Indicates queenside castling, which means the rook is at four to the left
 	        					// from the current king position
-	        					Location oldRookLocation = new Location(to.row, from.col + 4);
-	        					Location newRookLocation = new Location(to.row, from.col + 1);
+	        					System.out.println(from);
+	        					Location oldRookLocation = new Location(to.row, from.col - 4);
+	        					Location newRookLocation = new Location(to.row, from.col - 1);
 	        					move = new ChessMove(from, to, pieceToMove, 
 	        							oldRookLocation, newRookLocation);
 	        					move.castled();
 	        				}
 	        				else if (from.col - to.col > 1) {
-	        					// Indicates kingside castling, which means the rook is at three to the left
+	        					System.out.println(from);
+	        					// Indicates kingside castling, which means the rook is at three to the right
 	        					// from the current king position
-	        					Location oldRookLocation = new Location(to.row, from.col - 3);
-	        					Location newRookLocation = new Location(to.row, from.col - 1);
+	        					Location oldRookLocation = new Location(to.row, from.col + 3);
+	        					Location newRookLocation = new Location(to.row, from.col + 1);
 	        					move = new ChessMove(from, to, pieceToMove, 
 	        							oldRookLocation, newRookLocation);
 	        					move.castled();

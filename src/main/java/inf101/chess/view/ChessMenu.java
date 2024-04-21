@@ -21,6 +21,7 @@ import inf101.chess.player.GameEndedException;
 import inf101.chess.player.RestartException;
 import inf101.chess.player.ai.AlphaBetaChessPlayer;
 import inf101.chess.player.ai.DumbChessPlayer;
+import inf101.chess.player.ai.RandomChessPlayer;
 import inf101.sem2.game.games.Chess;
 
 /**
@@ -123,9 +124,10 @@ public class ChessMenu implements ActionListener {
 		if (promptMultiplayer()) {
 			players.add(new ChessGUIPlayer(s2));
 		} else {
+			players.add(new RandomChessPlayer(s2));
 			// make AI
-			int intelligence = promptIntelligence();
-			players.add(new AlphaBetaChessPlayer(s2, intelligence));
+			// int intelligence = promptIntelligence();
+			// players.add(new AlphaBetaChessPlayer(s2, intelligence));
 		}
 		return players;
 	}

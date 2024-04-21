@@ -1,4 +1,6 @@
-package inf101.chess.model;
+package inf101.chess.view;
+
+import inf101.chess.model.ChessBoard;
 
 /**
  * This interface describes how to display game information for human players.

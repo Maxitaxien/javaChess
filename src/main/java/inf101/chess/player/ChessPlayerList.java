@@ -54,6 +54,11 @@ public class ChessPlayerList implements Iterable<ChessPlayer> {
 		return players.get(currentIndex);
 	}
 	
+	public ChessPlayer getNextPlayer() {
+		int otherPlayerIndex = (currentIndex == 0) ? 1 : 0;
+		return players.get(otherPlayerIndex);
+	}
+	
 	public char getCurrentPlayerChar() {
 		return players.get(currentIndex).getSymbol();
 	}

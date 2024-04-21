@@ -19,9 +19,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import inf101.chess.model.ChessBoard;
-import inf101.chess.model.ChessGraphics;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
+import inf101.chess.player.ChessGUIPlayer;
 import inf101.chess.player.ChessPlayer;
 import inf101.chess.player.ChessPlayerList;
 import inf101.grid.ChessMove;
@@ -145,14 +145,17 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	    Location to = selectedPanels.get(1);
 	    Piece piece = gameBoard.get(from);
 	    
-	    // Update the current player for the clickable panels as well, for possible move-showing purposes.
-	    board.players.nextPlayer();
+	    // If playing with another human, update the current player for the 
+	    // clickable panels as well, for move-showing purposes.
+	    if (players.getNextPlayer() instanceof ChessGUIPlayer) {
+	        board.players.nextPlayer();
+	    }
 
 	    // Create a different kind of move if castling is attempted
 	    if (piece instanceof King && Math.abs(from.col - to.col) > 1) {
 	        boolean kingside = to.col > from.col;
 	        Location rookFrom = new Location(from.row, kingside ? gameBoard.numColumns() - 1 : 0);
-	        Location rookTo = new Location(to.row, kingside ? 4 : 2);
+	        Location rookTo = new Location(to.row, kingside ? 5 : 3);
 	        return new ChessMove(from, to, piece, rookFrom, rookTo);
 	    } else {
 	        // Regular move
