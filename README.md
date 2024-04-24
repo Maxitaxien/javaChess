@@ -45,5 +45,5 @@ få representasjonen helt riktig. AI-spillere var også mer passende å teste ut
  
 ## Video
  
- En video med demo av spillet er lagt ut på denne YouTube linken:
-  *
+ En video med demo av spillet er lagt ut på YouTube:
+  * [Link til video](https://youtu.be/8HQnvWGzLHM)
