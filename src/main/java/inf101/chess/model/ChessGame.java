@@ -4,14 +4,14 @@ package inf101.chess.model;
 import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.player.ChessPlayer;
 import inf101.chess.player.ChessPlayerList;
-import inf101.chess.player.ai.ChessDummyGraphics;
+import inf101.chess.view.ChessDummyGraphics;
 import inf101.chess.view.ChessGraphics;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;
 
 /**
  * Inspired by the Game class by Martin Vatshelle
- * Adapted and expandedto work with chess
+ * Adapted and expanded to work with chess
  */
 public abstract class ChessGame {
 
@@ -47,7 +47,6 @@ public abstract class ChessGame {
 		}
 	}
 
-	
 	/**
 	 * Returns the current state of the game using a GameStateDeterminer.
 	 * @param inputBoard the current board state
@@ -61,18 +60,20 @@ public abstract class ChessGame {
 	/**
 	 * Returns the GameState of the game,
 	 * as calculated by determineState.
-	 * @return current state of game
+	 * @return current state of game (ACTIVE, CHECK, CHECKMATE, STALEMATE)
 	 */
 	public GameState getState() {
 		return this.state;
 	}
 	
-
 	/**
-	 * When players are asked to make a move we don't want them to change the
-	 * state of the game, so we send them a copy of the game.
+	 * Manually set the game state,
+	 * useful for testing.
+	 * @param setTo the GameState to set to
 	 */
-	public abstract ChessGame copy();
+	public void setState(GameState setTo) {
+		this.state = setTo;
+	}
 
 	/**
 	 * Create copy of game object, but with a non working graphics object.
@@ -102,8 +103,7 @@ public abstract class ChessGame {
 		target.state = state;
 	}
 
-	// TODO: Make a move be a capture or a normal move based on an attribute in the ChessMove
-	// Handle the different cases differently.
+
 	/**
 	* This method performs a move for the current player and advances to next
 	* player. 
@@ -120,8 +120,6 @@ public abstract class ChessGame {
 	}
 
 	
-    
-    
 	/**
 	 * Adds a player to the game.
 	 * 
@@ -130,15 +128,6 @@ public abstract class ChessGame {
 	protected void addPlayer(ChessPlayer player) {
 		players.add(player);
 	}
-
-	/**
-	 * Gets a copy of the GameBoard.
-	 * @return a copy
-	 */
-	public IChessBoard getGameBoard() {
-		return board.copy();
-	}
-
 	
 	/**
 	 * Inspired by the method used in Othello,
@@ -149,67 +138,120 @@ public abstract class ChessGame {
 	public boolean isOpponent(Location loc) {
 		if (!board.isOnBoard(loc))
 			return false;
-		if (board.get(loc) == getCurrentPlayer())
-			return false;
 		if (board.get(loc) == null)
+			return false;
+		if (board.get(loc).getColour() == getCurrentPlayerChar())
 			return false;
 		return true;
 	}
-
-	public void displayBoard() {
-		graphics.display(board);
+	
+	/**
+	 * Gets a copy of the GameBoard.
+	 * @return a copy
+	 */
+	public IChessBoard getGameBoard() {
+		return board.copy();
 	}
-
-	public void displayMessage(String message) {
-		graphics.displayMessage(message);
-	}
-
-	public void displayPlayerTurn() {
-		String playerTurnString = getCurrentPlayer() + "'s turn.";
-		displayMessage(playerTurnString);
-	}
-
+	
+	/**
+	 * Returns a copy of the current players in the game
+	 * @return a list of ChessPlayers
+	 */
 	public Iterable<ChessPlayer> players() {
 		return players.copy();
 	}
 
+	/**
+	 * Moves the turn to the next player in the list.
+	 */
 	public void nextPlayer() {
 		players.nextPlayer();
 	}
 	
+	/**
+	 * Gets the character of the current player.
+	 * @return 'W' or 'B' depending on if it is White or Black's turn
+	 */
 	public char getCurrentPlayerChar() {
 		return players.getCurrentPlayerChar();
 	}
 
+	/**
+	 * Gets the ChessPlayer object of the current player
+	 * @return a ChessPlayer (player 1 or player 2)
+	 */
 	public ChessPlayer getCurrentPlayer() {
 		return players.getCurrentPlayer();
 	}
 
+	/**
+	 * Sets the current player manually, used for restarts
+	 * @param player the player to set to
+	 */
 	public void setCurrentPlayer(ChessPlayer player) {
 		players.setCurrentPlayer(player);
 	}
+	
+	/**
+	 * When players are asked to make a move we don't want them to change the
+	 * state of the game, so we send them a copy of the game.
+	 */
+	public abstract ChessGame copy();
 
-	public ChessGraphics getGraphics() {
-		return graphics;
-	}
 
+	/**
+	 * Displays the board through the use of graphics
+	 */
+	public abstract void displayBoard();
+
+	/**
+	 * Displays a message at the top of the game window through the use of graphics
+	 * @param message the message to display
+	 */
+	public abstract void displayMessage(String message);
+
+	/**
+	 * Displays the player that starts the game (the player with white)
+	 * Is called at the start of the game loop
+	 */
+	public abstract void displayStartingPlayer();
+	
+	/**
+	 * Displays the last move of the last player to move
+	 * Used in the game loop
+	 * @param move the move that was made
+	 * @param turn which turn of the game we are on
+	 * @param white boolean indicating if white made the move or not
+	 * @param check whether the move came with check
+	 */
+	public abstract void displayLastMove(ChessMove move, int turn, boolean white, boolean check);
+	
+
+	/**
+	 * Sets up pieces on the board through a call to
+	 * the board.
+	 */
+	protected abstract void initialize();
+	
+	/**
+	 * Get the graphics of the current chess game
+	 * @return the graphics of the game
+	 */
+	public abstract ChessGraphics getGraphics();
+
+	/**
+	 * Get the name of the game (should be "Chess", but can be changed if other names are wanted)
+	 * @return a string representing the game name
+	 */
 	public abstract String getName();
 
-	public void restart() {
-		board.clearBoard();
-		board.initializeBoard();
-		players.restart();
-		graphics.display(board);
-		graphics.displayMessage("Welcome!");
-	}
+	/**
+	 * Restarts the game, reinitializes board.
+	 */
+	public abstract void restart();
 
-	public void sleep() {
-		if (graphics instanceof ChessDummyGraphics)
-			return;
-		try {
-			Thread.sleep(SINGLE_MOVE_TIME);
-		} catch (InterruptedException e) {
-			System.err.println("Sleep interrupted");
-		}
-	}
+	/**
+	 * Sleeps for the time between moves, as defined in the game.
+	 */
+	public abstract void sleep();
 }

@@ -15,6 +15,12 @@ import inf101.grid.Location;
 import inf101.chess.model.ChessBoard;
 import inf101.chess.model.GameState;
 
+/**
+ * Note that findKing is 
+ * implicitly tested, as it is a helper method 
+ * for both determinerCheck
+ * and kingInDangerAfterMove.
+ */
 public class GameStateDeterminerTest {
 	GameStateDeterminer determiner;
 	IChessBoard board;

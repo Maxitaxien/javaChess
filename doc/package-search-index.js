@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"inf101.chess.logic"},{"l":"inf101.chess.main"},{"l":"inf101.chess.model"},{"l":"inf101.chess.pieces"},{"l":"inf101.chess.player"},{"l":"inf101.chess.player.ai"},{"l":"inf101.chess.view"},{"l":"inf101.grid"},{"l":"inf101.util"},{"l":"inf101.util.generators"}];updateSearchResults();

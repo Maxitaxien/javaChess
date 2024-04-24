@@ -12,6 +12,7 @@ Du finner allerede fire brettspill implementert:
 Rammeverket har også en AI-algoritme/spiller som fungerer likt for alle spillene.
 
 ## Om sjakkspillet
+Spillet kan startes gjennom å kjøre MainChessGUI.java som finnes i inf101.chess.main.
 Regler fra vanlig sjakkspill gjelder utenom disse spesialreglene:
  * En passant: Spesialtrekket en passant er ikke implementert.
  * Three-fold repition: Det er ikke automatisk remis om en og samme posisjon gjentas tre ganger.
@@ -24,7 +25,7 @@ Regler fra vanlig sjakkspill gjelder utenom disse spesialreglene:
  evaluasjonsmetoden (som var utenom prosjektets skop å perfeksjonere denne gang)
  fungerer ikke denne AI-en godt pr. nå på dybde over 3, så det anbefales å velge denne dybden.
  Høyere dybder bruker også veldig lang tenketid, særlig i starten av spillet der mange trekk er mulig.
- Dybde-3 versjonen spiller greit, og tar vanligvis en brikke om en har muligheten til det.
+ Dybde-3 versjonen spiller overraskende greit, og tar vanligvis en brikke om en har muligheten til det.
  
 ## Om prosjektets oppbygging
 Prosjektet er delt inn i pakker som representerer hver sin del av spillet:

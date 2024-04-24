@@ -1,6 +1,8 @@
 package inf101.grid;
 
-import java.util.Iterator;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import inf101.chess.pieces.Piece;
 
@@ -11,6 +13,17 @@ public class ChessMove extends Move {
 	private Piece piece;
 	private boolean capture; // Indicates if the move is a capture
 	private boolean castle; // Indicates if the move is a castle
+	private boolean promotion; // Indicates if the move is a promotion
+	
+	private final Map<Integer, Character> colMap = Map.of(
+			0, 'a', 1, 'b', 2, 'c', 3, 'd',
+			4, 'e', 5, 'f', 6, 'g', 7, 'h');
+	
+	private final Map<Integer, Character> rowMap = Map.of(
+			0, '8', 1, '7', 2, '6', 3, '5',
+			4, '4', 5, '3', 6, '2', 7, '1');
+	
+		
 	
 	// These are only set in the case that the move is a castle
 	private Location rookFrom;
@@ -19,6 +32,9 @@ public class ChessMove extends Move {
 	public ChessMove(Location from, Location to, Piece piece) {
 		super(from, to);
 		this.piece = piece;
+		this.capture = false;
+		this.capture = false;
+		this.promotion = false;
 		this.castle = false;
 	}
 	
@@ -44,19 +60,20 @@ public class ChessMove extends Move {
 		return piece;
 	}
 	
+
 	/**
-	 * Indicates if the move is a castle.
-	 * @return boolean indicating if the move is a castle
+	 * Sets the move to be a capture.
 	 */
-	public boolean isCastle() {
-		return castle;
+	public void capture() {
+		this.capture = true;
 	}
 	
+	
 	/**
-	 * Sets the move to be a castle.
+	 * Sets the move to be a promotion.
 	 */
-	public void castled() {
-		this.castle = true;
+	public void promotion() {
+		this.promotion = true;
 	}
 	
 	/**
@@ -66,6 +83,24 @@ public class ChessMove extends Move {
 	public boolean isCapture() {
 		return capture;
 	}
+	
+	
+	/**
+	 * Indicates if the move is a castle.
+	 * @return boolean indicating if the move is a castle
+	 */
+	public boolean isCastle() {
+		return castle;
+	}
+	
+	/**
+	 * Indicates if the move is a promotion.
+	 * @return boolean indicating if the move is a promotion.
+	 */
+	public boolean isPromotion() {
+		return promotion;
+	}
+
 	
 	/**
 	 * Used in castling. Gets the location of the rook to move
@@ -83,23 +118,39 @@ public class ChessMove extends Move {
 		return rookTo;
 	}
 	
+
 	/**
-	 *  Slightly edited from the Move toString() method
-	 *  to account for captures/checks
+	 * Accounts for checks and captures and adds them to
+	 * string representation of move
 	 */
 	@Override
     public String toString() {
-        StringBuilder builder = new StringBuilder();
-        Iterator<Location> iterator = iterator();
-        while (iterator.hasNext()) {
-            Location loc = iterator.next();
-            builder.append(piece.getSymbol());
-            builder.append(loc);
-            if (iterator.hasNext())
-                builder.append(" --> ");
-        }
-        return builder.toString();
-    }
+		if (isCastle()) {
+			// Kingside
+			if (getRookFrom().col == 7) {
+				return "0-0";
+			}
+			else {
+				return "0-0-0";
+			}
+		}
+		else {
+			String capture = (isCapture()) ? "x" : "";
+			char pieceSymbol = getPiece().getSymbol();
+			char newRow = rowMap.get(getTo().row);
+			char newCol = colMap.get(getTo().col);
+			if (pieceSymbol != 'P') {
+				return pieceSymbol + capture + newCol + newRow;
+			}
+			// Special cases for pawns
+			else {
+				char pawnColumn = colMap.get(getFrom().col);
+				String firstChar = (capture.equals("x")) ? String.valueOf(pawnColumn) : "";
+				String promotionAddition = (isPromotion()) ? "=Q" : "";
+				return firstChar + capture + newCol + newRow + promotionAddition;
+			}
+		}
+	}
 	
 	
 }

@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inf101.chess.logic.CastleRule;
-import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.model.IChessBoard;
-import inf101.grid.ChessMove;
 import inf101.grid.Location;
 
 public class King extends Piece {
@@ -20,7 +18,7 @@ public class King extends Piece {
 	/**
 	 * Indicates if the king has castled.
 	 * An already castled king cannot castle again
-	 * @return
+	 * @return boolean indicating if king has castled
 	 */
 	public boolean hasCastled() {
 		return this.hasCastled;
@@ -36,9 +34,9 @@ public class King extends Piece {
 	
 	@Override
 	public int getValue() {
-		// Here we just return a sufficiently high number in relation to the other,
-		// to make the algorithm realize that it is very bad to lose a king!
-		return 1000;
+		// Here we just return a sufficiently high number in relation to the other values,
+		// to make the algorithm realize that it is  bad to lose a king!
+		return 12;
 	}
 	
 	@Override

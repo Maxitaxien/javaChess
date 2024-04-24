@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import inf101.chess.logic.DirectionalCalculator;
 import inf101.chess.model.ChessBoard;
 import inf101.grid.Location;
 

@@ -43,14 +43,14 @@ public class MoveCollectorAndVerifier {
 	    	return false; // Move leaves king in check
 	    }
 
-	    // Additional checks for the legality of the move per piece type
+
 	    return board.get(move.getFrom()).getPossibleMoves(board).contains(move.getTo());
 	}
 	
 	/**
 	 * Look through grid. When we find a piece, calculate it's 
-	 * legal moves. 
-	 * 
+	 * legal moves and verify with ValidMove. 
+	 * @return a list of ChessMoves that are all legal moves
 	 */
     public List<ChessMove> getMoves() {
 		List<ChessMove> possibleMoves = new ArrayList<>();
@@ -80,7 +80,6 @@ public class MoveCollectorAndVerifier {
 	        					Location newRookLocation = new Location(to.row, from.col - 1);
 	        					move = new ChessMove(from, to, pieceToMove, 
 	        							oldRookLocation, newRookLocation);
-	        					move.castled();
 	        				}
 	        				else if (from.col - to.col > 1) {
 	        					// Indicates kingside castling, which means the rook is at three to the right
@@ -89,10 +88,9 @@ public class MoveCollectorAndVerifier {
 	        					Location newRookLocation = new Location(to.row, from.col + 1);
 	        					move = new ChessMove(from, to, pieceToMove, 
 	        							oldRookLocation, newRookLocation);
-	        					move.castled();
 	        				}
 	        				else {
-	        					// Indicates a normal move
+	        					// Indicates a normal king move
 	        					move = new ChessMove(from, to, pieceToMove);
 	        				}
 	        				if (validMove(move)) {

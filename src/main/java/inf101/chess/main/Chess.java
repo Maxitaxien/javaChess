@@ -9,6 +9,7 @@ import inf101.chess.model.ChessBoard;
 import inf101.chess.model.ChessGame;
 import inf101.chess.model.GameState;
 import inf101.chess.player.ChessPlayer;
+import inf101.chess.view.ChessDummyGraphics;
 import inf101.chess.view.ChessGraphics;
 
 /**
@@ -37,14 +38,17 @@ public class Chess extends ChessGame {
 	 */
 	public void run() {
 		// game loop
+		int turnCounter = 0;
 		while (true) {
 			try {
-				displayPlayerTurn();
+				if (turnCounter == 0) {
+					displayStartingPlayer();
+				}
 				if (getPossibleMoves().isEmpty()) {
-					players.nextPlayer();
 					this.state = determineState(this.board);
 					if (this.state == GameState.CHECK) {
 						this.state = GameState.CHECKMATE;
+						players.nextPlayer();
 						break;
 					}
 					else {
@@ -53,23 +57,43 @@ public class Chess extends ChessGame {
 					}
 				}
 				
+				// Update turn counter when white has made a move:
+				boolean isWhite = getCurrentPlayerChar() == 'W';
+				if (isWhite) {
+					turnCounter += 1;
+				}
+				
 
 				// Get move from player and execute
 				ChessMove move = getCurrentPlayer().getMove(copy());
+				
+				// Update move representation if it is a capture
+				if (board.isOpponent(getCurrentPlayerChar(),move.getTo())) {
+					move.capture();
+				}
+				
 				makeMove(move);
 				
 				// Handle possible pawn promotions:
 				int promotionRow = (getCurrentPlayer().getSymbol() == 'W') ? 0 : 7;
 				if (move.getPiece().getSymbol() == 'P' && move.getTo().row == promotionRow) {
+					move.promotion();
 					board.setPiece(move.getTo(), new Queen(move.getPiece().getColour(), move.getTo()));
-					graphics.display(board);
 				}
+								
+				
+
+				displayLastMove(move, turnCounter, isWhite, false);
+				
 				players.nextPlayer();
-					
+				
 				this.state = determineState(this.board);
 					
 				if (this.state == GameState.CHECK) {
-						graphics.displayMessage("Check!");
+						// To display the correct player, we switch before the display, then switch back
+						players.nextPlayer();
+						displayLastMove(move, turnCounter, isWhite, true);
+						players.nextPlayer();
 						;
 				}
 			} catch (IllegalArgumentException e) {
@@ -84,18 +108,19 @@ public class Chess extends ChessGame {
 		graphics.display(board);
 	}
 	
-	/**
-	 * Sets up piecces on the board through a call to
-	 * the board.
-	 */
-	private void initialize() {
+
+	@Override
+	protected void initialize() {
 		board.initializeBoard();
 	}
 	
 	@Override
-	public void makeMove(ChessMove move) {
-		super.makeMove(move);
-		displayBoard();
+	public void restart() {
+		board.clearBoard();
+		board.initializeBoard();
+		players.restart();
+		graphics.display(board);
+		graphics.displayMessage("Welcome!");
 	}
 	
 	/**
@@ -107,8 +132,13 @@ public class Chess extends ChessGame {
 		MoveCollectorAndVerifier moveCollector = new MoveCollectorAndVerifier(getGameBoard(), players.getCurrentPlayerChar());
 		return moveCollector.getMoves();
 	}
-
-
+	
+	@Override
+	public void makeMove(ChessMove move) {
+		super.makeMove(move);
+		displayBoard();
+	}
+	
 
 	@Override
 	public Chess copy() {
@@ -117,6 +147,46 @@ public class Chess extends ChessGame {
 		newGame.state = state;
 		return newGame;
 		}
+	
+	@Override
+	public void displayBoard() {
+		graphics.display(board);
+	}
+
+	@Override
+	public void displayMessage(String message) {
+		graphics.displayMessage(message);
+	}
+
+	@Override
+	public void displayStartingPlayer() {
+		String startingPlayer = getCurrentPlayer() + " starts the game";
+		displayMessage(startingPlayer);
+	}
+	
+	@Override
+	public void displayLastMove(ChessMove move, int turn, boolean white, boolean check) {
+		String numberDisplay = (white) ? ":" : ":...";
+		String checkSymbol = (check) ? "+" : "";
+		String displayString = getCurrentPlayer() + " played " + Integer.toString(turn) + numberDisplay + move + checkSymbol;
+		displayMessage(displayString);
+	}
+	
+	@Override
+	public ChessGraphics getGraphics() {
+		return graphics;
+	}
+	
+	@Override
+	public void sleep() {
+		if (graphics instanceof ChessDummyGraphics)
+			return;
+		try {
+			Thread.sleep(SINGLE_MOVE_TIME);
+		} catch (InterruptedException e) {
+			System.err.println("Sleep interrupted");
+		}
+	}
 	
 
 	@Override

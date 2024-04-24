@@ -1,0 +1,11 @@
+inf101
+inf101.chess.logic
+inf101.chess.main
+inf101.chess.model
+inf101.chess.pieces
+inf101.chess.player
+inf101.chess.player.ai
+inf101.chess.view
+inf101.grid
+inf101.util
+inf101.util.generators

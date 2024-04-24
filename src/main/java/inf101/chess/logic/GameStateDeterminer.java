@@ -17,6 +17,10 @@ public class GameStateDeterminer {
 		this.currentPlayerSymbol = currentPlayerSymbol;
 	}
 	
+	/**
+	 * Determines if the current position is a check.
+	 * @return a GameState CHECK if check and ACTIVE if not
+	 */
 	public GameState determineCheck() {
 		Location kingLoc = findKing(board, currentPlayerSymbol);
 		for (Location loc : board.locations()) {
@@ -33,6 +37,11 @@ public class GameStateDeterminer {
 		return GameState.ACTIVE;
 	}
 	
+	/**
+	 * Checks if a player's move will leave the current king in danger
+	 * @param move the move to test for
+	 * @return a boolean indicating if the king can be taken
+	 */
 	public boolean kingInDangerAfterMove(ChessMove move) {
 		IChessBoard testBoard = board.copy();
 		testBoard.movePiece(move.getFrom(), move.getTo());
