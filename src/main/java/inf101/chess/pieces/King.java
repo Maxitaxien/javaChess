@@ -4,24 +4,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 import inf101.chess.logic.CastleRule;
-import inf101.chess.model.ChessBoard;
+import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.model.IChessBoard;
+import inf101.grid.ChessMove;
 import inf101.grid.Location;
 
 public class King extends Piece {
 	private boolean hasCastled = false;
-	private boolean hasMoved = false;
 	
 	public King(char colour, Location loc) {
 		super(colour, 'K', loc);
 	}
 	
-	public boolean hasMoved() {
-		return this.hasMoved;
-	}
-	
+
+	/**
+	 * Indicates if the king has castled.
+	 * An already castled king cannot castle again
+	 * @return
+	 */
 	public boolean hasCastled() {
 		return this.hasCastled;
+	}
+	
+	/**
+	 * Update the king's hasCastled to true when castling is done.
+	 */
+	public void castled() {
+		hasCastled = true;
+	}
+	
+	
+	@Override
+	public int getValue() {
+		// Here we just return a sufficiently high number in relation to the other,
+		// to make the algorithm realize that it is very bad to lose a king!
+		return 1000;
+	}
+	
+	@Override
+	public King copy() {
+		King newKing = new King(this.getColour(), this.getLocation());
+		if (hasMoved()) {
+			newKing.moved();
+		}
+		if (hasCastled()) {
+			newKing.castled();
+		}
+		return newKing;
 	}
 
 	@Override
@@ -38,29 +67,21 @@ public class King extends Piece {
 					int newRow = currentRow + i;
 					int newCol = currentCol + j;
 					newLoc = new Location(newRow, newCol);
-					if (board.isOnBoard(newLoc) && (board.squareEmpty(newLoc) || board.isOpponent(getColour(), newLoc))) {
+					if (board.isOnBoard(newLoc) && ((board.squareEmpty(newLoc) || 
+							board.isOpponent(getColour(), newLoc)))) {
 						possibleMoves.add(newLoc);
 					}
 				}
 			}
 		}
 
-		if (!hasCastled() && !hasMoved()) {
-			CastleRule rule = new CastleRule(board, this);
-			List<Location> possibleCastles = rule.getLegalCastles();
-			possibleMoves.addAll(possibleCastles);
-		}
+		
+		CastleRule rule = new CastleRule(board, this);
+		List<Location> possibleCastles = rule.getLegalCastles();
+		possibleMoves.addAll(possibleCastles);
 		
 		return possibleMoves;
 	}
 	
-	public void castled() {
-		hasCastled = true;
-	}
 
-	@Override
-	public void moved() {
-		hasMoved = true;
-		
-	}
 }

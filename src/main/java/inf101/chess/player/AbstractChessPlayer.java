@@ -1,13 +1,8 @@
 package inf101.chess.player;
 
 /**
- * This class takes care of the name and symbol handling in Player classes.
- * Using an abstract class here means we avoid duplicating this code in each
- * class of Players.
- * <p>
- * Each player must have a symbol to be displayed on the board
- * and a name to be displayed in game messages.
- *
+ * An abstract class by all kinds of ChessPlayers.
+ * Heavily inspired by AbstractPlayer, author:
  * @author Martin Vatshelle - martin.vatshelle@uib.no
  */
 public abstract class AbstractChessPlayer implements ChessPlayer {

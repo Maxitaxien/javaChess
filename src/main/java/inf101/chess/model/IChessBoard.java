@@ -6,17 +6,14 @@ import inf101.grid.Location;
 
 /**
  * An interface for chess boards.
- * Used for implementing the real chess board,
- * and a more efficient testing chess board
- * which will be used to calculate legal moves when in check.
- * The board should always be 8x8.
+ * The board should always be 8x8 unless when testing.
  */
 public interface IChessBoard {
 	
 	/**
 	 * Used to set a piece at a position.
-	 * @param loc
-	 * @param piece
+	 * @param loc the position to set
+	 * @param piece the piece to set at position
 	 */
 	public void setPiece(Location loc, Piece piece);
 	
@@ -36,12 +33,9 @@ public interface IChessBoard {
 	
 	/**
 	 * Copies to a new chess board.
-	 * Can be used to pass information from 
-	 * a "real" chess board to a testing chess board.
-	 * @param test whether to create a TestBoard or a ChessBoard
 	 * @return the new chess board
 	 */
-	public IChessBoard copy(boolean test);
+	public IChessBoard copy();
 	
 	/**
 	 * Returns the piece at the position.
@@ -89,8 +83,6 @@ public interface IChessBoard {
 	
 	/**
 	 * Move piece found at location from to location to.
-	 * 
-	 * 
 	 * @param from
 	 * @param to
 	 */
@@ -103,12 +95,15 @@ public interface IChessBoard {
 	public GridLocationIterator locations();
 	
 	/**
-	 * Counts the number of pieces on the board for a given player.
+	 * Counts the value of pieces on the board for a given player.
+	 * @param playerChar the colour of the player to count for 
 	 */
-	public int countPieces(char PlayerChar);
+	public int countValue(char playerChar);
 	
 	/**
 	 * Checks if given location is on the board.
+	 * @param loc the location to check
+	 * @return boolean indicating true or false
 	 */
 	public boolean isOnBoard(Location loc);
 }

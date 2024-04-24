@@ -18,25 +18,23 @@ import inf101.grid.Grid;
 import inf101.grid.Location;
 import inf101.chess.logic.GameStateDeterminer;
 import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.chess.player.ChessPlayerList;
 /**
- * This class is a grid of Game panels.
- * This is also a MouseListener for all those GamePanels
- * so whenever any of the panels in the grid is clicked
- * a method in this class is envoked.
- * <p>
- * This click will be translated into a Location and a
- * move will be sent to the game.
- *
- * @author Anna Eilertsen - anna.eilertsen@uib.no
- * @author Martin Vatshelle - martin.vatshelle@uib.no
+ * Inspired by ClickableGrid by:
+ * Anna Eilertsen - anna.eilertsen@uib.no
+ * Martin Vatshelle - martin.vatshelle@uib.no
+ * 
+ * The grid has been edited so that it also shows a little circle
+ * on panels where the current player can move their piece to.
+ * The panels in the ClickableChessGrid can each hold one piece.
  */
 public class ClickableChessGrid extends JPanel {
 
 	private static final long serialVersionUID = 8755882090377973497L;
 	private MouseAdapter adapter;
 	private Grid<GamePanel> clickablePanels; // clickable grid for user input
-	private ChessBoard board;
+	private IChessBoard board;
 	/**
 	 * Location of panel most recently clicked
 	 */
@@ -56,8 +54,8 @@ public class ClickableChessGrid extends JPanel {
 
 	HashMap<Character, Color> colorMap;
 
-	public ClickableChessGrid(ChessBoard board, ChessPlayerList players, List<Color> colours) {
-		this.board = board;
+	public ClickableChessGrid(IChessBoard gameBoard, ChessPlayerList players, List<Color> colours) {
+		this.board = gameBoard;
 		adapter = new ClickableGridListener();
 
 		// assign colors to the players
@@ -66,8 +64,8 @@ public class ClickableChessGrid extends JPanel {
 		this.players = players;
 
 		// create clickable panels
-		int rows = board.numRows();
-		int cols = board.numColumns();
+		int rows = gameBoard.numRows();
+		int cols = gameBoard.numColumns();
 		clickablePanels = new Grid<>(rows, cols);
 		selectedPanels = new ArrayList<>();
 		previousPossibleMoves = new ArrayList<>();
@@ -75,8 +73,8 @@ public class ClickableChessGrid extends JPanel {
 		makeClickablePanels();
 
 		// set gui options
-		setPreferredSize(new Dimension(100 * board.numRows(), board.numColumns()));
-		setMinimumSize(new Dimension(100 * board.numRows(), board.numColumns()));
+		setPreferredSize(new Dimension(100 * gameBoard.numRows(), gameBoard.numColumns()));
+		setMinimumSize(new Dimension(100 * gameBoard.numRows(), gameBoard.numColumns()));
 		setRequestFocusEnabled(true);
 		requestFocus();
 		setVisible(true);
@@ -168,7 +166,11 @@ public class ClickableChessGrid extends JPanel {
 		}
 		selectedPanels.clear();
 	}
-
+	
+	/**
+	 * Reworked to fit better for chess
+	 * and to display possible moves.
+	 */
 	class ClickableGridListener extends MouseAdapter {
 	    @Override
 	    public void mousePressed(MouseEvent me) {

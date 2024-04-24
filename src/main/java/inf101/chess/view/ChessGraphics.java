@@ -1,8 +1,10 @@
 package inf101.chess.view;
 
-import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 
 /**
+ * Interface created by Martin Vatshelle.
+ * 
  * This interface describes how to display game information for human players.
  * A player needs to know the current state of the GameBoard in order to make a
  * move.
@@ -30,6 +32,6 @@ public interface ChessGraphics {
 	 * 
 	 * @param board - the board to display.
 	 */
-	void display(ChessBoard board);
+	void display(IChessBoard board);
 
 }

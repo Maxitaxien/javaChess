@@ -12,16 +12,16 @@ import inf101.grid.GridLocationIterator;
 import inf101.grid.Location;
 
 /**
- * A class for a ChessBoard to represent pieces.
- * Adapted from GameBoard to work with chess.
- * The code is therefore heavily inspired by GameBoard.
+ * A class for a ChessBoard which will hold pieces.
  */
 public class ChessBoard implements IChessBoard{
 
 	private Grid<Piece> grid;
 
-	public ChessBoard(int rows, int cols) {
-		grid = new Grid<>(rows, cols);
+	public ChessBoard(int numRows, int numColumns) {
+		// A chessboard should usually always be 8x8,
+		// but initializing smaller boards can be useful for testing methods.
+		grid = new Grid<>(numRows, numColumns);
 	}
 
 	@Override
@@ -157,33 +157,29 @@ public class ChessBoard implements IChessBoard{
 
 
 	@Override
-	public IChessBoard copy(boolean test) {
-		IChessBoard newBoard;
-		if (test) {
-			newBoard = new TestBoard(grid.numRows(), grid.numColumns());
-		}
-		else {
-			newBoard = new ChessBoard(grid.numRows(), grid.numColumns());
-		}
-		for (Location loc: this.locations()) {
-			if (get(loc) != null) {
-				newBoard.setPiece(loc, get(loc));
-			}
-		}
-		return newBoard;
+	public IChessBoard copy() {
+	    IChessBoard newBoard = new ChessBoard(numRows(), numColumns());
+	    for (Location loc : this.locations()) {
+	        Piece originalPiece = get(loc);
+	        if (originalPiece != null) {
+	            Piece newPiece = originalPiece.copy();
+	            newBoard.setPiece(loc, newPiece);
+	        }
+	    }
+	    return newBoard;
 	}
 
 	@Override
 	public GridLocationIterator locations() {
 		return grid.locations();
 	}
-
+	
 	@Override
-	public int countPieces(char playerChar) {
+	public int countValue(char playerChar) {
 		int total = 0;
 		for (Location loc : locations()) {
 			if (playerChar == getPlayerChar(loc)) {
-				total++;
+				total += get(loc).getValue();
 			}
 		}
 		return total;

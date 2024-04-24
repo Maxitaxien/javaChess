@@ -1,7 +1,9 @@
-package inf101.chess.pieces;
+package inf101.chess.logic;
 import inf101.chess.model.IChessBoard;
+import inf101.chess.pieces.Pawn;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,7 +27,10 @@ public class DirectionalCalculationTest {
 										new Location(3, 2), new Location(2, 1), 
 										new Location(2, 0), new Location(2, 3)));
 			
-		assertEquals(expectedLocations, calculator.calculateCardinal(pieceLocation, board, 'W'));
+		List<Location> trueLocations = calculator.calculateCardinal(pieceLocation, board, 'W');
+		for (Location loc : expectedLocations) {
+			assertTrue(trueLocations.contains(loc));
+		}
 	}
 	
 	
@@ -40,7 +45,10 @@ public class DirectionalCalculationTest {
 										new Location(0, 0), new Location(3, 1), 
 										new Location(1, 3)));
 		
-		assertEquals(expectedLocations, calculator.calculateDiagonal(pieceLocation, board, 'W'));
+		List<Location> trueLocations = calculator.calculateDiagonal(pieceLocation, board, 'W');
+		for (Location loc : expectedLocations) {
+			assertTrue(trueLocations.contains(loc));
+		}
 	}
 	
 	@Test

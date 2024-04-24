@@ -2,7 +2,6 @@ package inf101.chess.pieces;
 
 import java.util.List;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
 
@@ -10,11 +9,13 @@ public abstract class Piece {
 	private char colour;
 	private char symbol;
 	private Location loc;
+	private boolean hasMoved;
 	
 	public Piece(char colour, char symbol, Location loc) {
 		this.colour = colour;
 		this.symbol = symbol;
 		this.loc = loc;
+		this.hasMoved = false;
 	}
 	
 	/**
@@ -27,7 +28,7 @@ public abstract class Piece {
 	
 	/**
 	 * Get Location on board in row, col notation.
-	 * Example: Upper right corner of board: (0, 0)
+	 * Example: Upper left corner of board: (0, 0)
 	 * @return Location object representing board location
 	 */
 	public Location getLocation() {
@@ -42,6 +43,24 @@ public abstract class Piece {
 	 */
 	public char getSymbol() {
 		return symbol;
+	}
+	
+	/**
+	 * Updates a piece's hasMoved attribute.
+	 * Not relevant for all pieces, but as we are using Piece as an abstract 
+	 * class, we might as well implement this for every kind of piece.
+	 * Important for pawns, kings and rooks.
+	 */
+	public void moved() {
+		this.hasMoved = true;
+	}
+	
+	/**
+	 * Let's us know if the piece has already moved.
+	 * @return a boolean indicating if the piece has been moved in the game.
+	 */
+	public boolean hasMoved() {
+		return this.hasMoved;
 	}
 	
 	/**
@@ -60,18 +79,23 @@ public abstract class Piece {
 	public abstract List<Location> getPossibleMoves(IChessBoard board);
 
 	/**
-	 * Moves the piece and updates the hasMoved attribute if the piece has one.
+	 * Creates a copy of a piece,
+	 * to be used when testing positions
+	 * @return a copy of the current Piece
 	 */
-	public abstract void moved();
+	public abstract Piece copy();
+	
 	
 	/**
-	 * Let's us know if the piece has been moved earlier in the game.
-	 * @return boolean indicating if the piece has previously moved
+	 * Get the value for the piece, which can be used for AI players.
+	 * These are 1 for pawn, 3 for knight and bishop, 5 for rook,
+	 * 9 for the queen and infinity for the king.
+	 * @return integer giving the piece value for the kind of piece
 	 */
-	public abstract boolean hasMoved();
+	public abstract int getValue();
 	
 	@Override
 	public String toString() {
-		return "Piece: " + getSymbol()+ getColour();
+		return "" + getSymbol() + getColour();
 	}
 }

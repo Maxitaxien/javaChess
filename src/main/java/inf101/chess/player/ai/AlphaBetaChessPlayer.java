@@ -1,13 +1,19 @@
 package inf101.chess.player.ai;
 
 import inf101.grid.ChessMove;
-import inf101.grid.Move;
+import inf101.grid.Location;
+import inf101.chess.logic.MoveCollectorAndVerifier;
 import inf101.chess.model.ChessGame;
 import inf101.chess.model.GameState;
 import inf101.chess.player.AbstractChessPlayer;
-import inf101.chess.player.ChessPlayer;
 
 /**
+ * Adapted from the AlphaBetaPlayer algorithm to work with chess, by:
+ * @author Sondre Bolland - sondre.bolland@uib.no
+ * @author Martin Vatshelle - martin.vatshelle@uib.no
+ * 
+ * Description for the AlphaBetaPlayer the class is based on: 
+ * 
  * This AI is based on an algorithm that is not curriculum for INF101, but maybe
  * for INF102.
  * Since many of the students had tried implementing such an AI I have included
@@ -27,12 +33,6 @@ import inf101.chess.player.ChessPlayer;
  * a game state whether a player wants to select those moves or not.
  * <p>
 
- * Note that the sum of the scores for both players always is 0.
- *
- *
- * @author Sondre Bolland - sondre.bolland@uib.no
- * @author Martin Vatshelle - martin.vatshelle@uib.no
-
  */
 public class AlphaBetaChessPlayer extends AbstractChessPlayer {
 	/**
@@ -44,7 +44,10 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
      * maximize and who wants to minimize the score at a given move.
      * Needed to update <code>alpha</code> and <code>beta<\code>
      */
-    ChessPlayer currentPlayer;
+    char originalPlayerChar;
+
+    
+    double bestScore = Double.MIN_VALUE;;
 
 	public AlphaBetaChessPlayer(char piece, int level) {
 		super(piece, "AlphaBeta");
@@ -54,62 +57,90 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
 	@Override
 	public ChessMove getMove(ChessGame game) {
 		game.displayMessage(name + " is thinking...");
-        currentPlayer = game.getCurrentPlayer();
-		ChessStrategy best = bestMove(game, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+		// Getting the colour of the the alphabetaplayer
+		char currentPlayerChar = game.getCurrentPlayerChar();
+		this.originalPlayerChar = game.getCurrentPlayerChar();
+		ChessStrategy best = bestMove(game, depth, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY, 
+										currentPlayerChar, false);
+
 		return best.move;
 	}
 
 	/**
 	 * Chooses the move that maximizes the players score
 	 *
-	 * @param game
-	 * @param depth
-	 * @return
+	 * @param game the current game to look through at higher depth passed as copy of game
+	 * @param depth the depth to search
+	 * @param alpha alpha for the alpha cutoff, initializes at negative infinity
+	 * @param beta beta for the beta cutoff, initializes at positive infinity
+	 * @param currentPlayerChar the colour of the current player
+	 * @param maximizingPlayer whether the current player is maximizing or minimizing
+	 * @return the best move
 	 */
-	private ChessStrategy bestMove(ChessGame game, int depth, int alpha, int beta) {
-		ChessStrategy best = null;
-		int bestScore = 0;
+	private ChessStrategy bestMove(ChessGame game, int depth, double alpha, double beta, char currentPlayerChar, boolean maximizingPlayer) {
+	    if (game.getState() == GameState.CHECKMATE ||
+	    	game.getState() == GameState.STALEMATE || depth == 1) {
+	        double score = PositionScoring.score(game.getGameBoard(), game.getCurrentPlayer());
+	        if (maximizingPlayer) {
+	            return new ChessStrategy(null, score); 
+	        } else {
+	            return new ChessStrategy(null, -score); 
+	        }
+	    }
 
-		// try each possible strategy
-		for (ChessMove move : game.getNormalMoves()) {
-			// make a copy of the game and try the move
-			ChessGame newGame = game.copyGameWithoutGraphics();
-			newGame.makeMove(move, GameState.ACTIVE); // note that this changes the current player in the copy but not the real game
-			newGame.nextPlayer();
+	    ChessStrategy bestStrategy = null;
+	    MoveCollectorAndVerifier moveGetter = new MoveCollectorAndVerifier(game.getGameBoard(), currentPlayerChar);
+	    double value = maximizingPlayer ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
 
-			ChessStrategy current = null;
-			if (newGame.gameOver() || depth == 1 || newGame.getNormalMoves().isEmpty()) { // No more moves can be made
-				current = new ChessStrategy(move, newGame);
-			} else {
-				// call recursively such that the opponent makes the move that is best for him
-				// change the sign since this is the score of the best move for opponent
-                current = bestMove(newGame, depth - 1, alpha, beta);
-				current.move = move;
-			}
+	    for (ChessMove move : moveGetter.getMoves()) {
+	        ChessGame newGame = game.copyGameWithoutGraphics();
+	        if (!moveGetter.validMove(move)) {
+	            continue; 
+	        }
 
-			int score = current.game.score(game.getCurrentPlayer());
-			// keep the best Strategy
-			if (best == null || score > bestScore) {
-				best = current;
-				bestScore = score;
-			}
-            // Update alpha and beta based on if the player wants
-            // to maximize or minimize move choice
-            if (game.getCurrentPlayer().equals(currentPlayer)) {
-                alpha = Math.max(alpha, bestScore);
-            }
-            else {
-                beta = Math.min(beta, bestScore);
-            }
-            if (beta <= alpha)
-                break;
-		}
-		if (best == null) {
-			System.err.println("This should not happen! No moves possible?");
-		}
-		return best;
+	        // If the move is a castle, reflect this
+		    Location from = move.getFrom();
+		    Location to = move.getTo();
+		    if (move.getPiece().getSymbol() == 'K' && Math.abs(from.col - to.col) > 1) {
+		    	boolean kingside = to.col > from.col;
+		        Location rookFrom = new Location(from.row, kingside ? game.getGameBoard().numColumns() - 1 : 0);
+		        Location rookTo = new Location(to.row, kingside ? 5 : 3);
+		        move = new ChessMove(from, to, move.getPiece(), rookFrom, rookTo);
+		    }
+	        newGame.makeMove(move);
+	        // Recursively call bestMove with flipped maximizingPlayer
+	        ChessStrategy currentStrategy = bestMove(newGame, depth - 1, alpha, beta, currentPlayerChar == 'W' ? 'B' : 'W', !maximizingPlayer);
+	        double currentScore = currentStrategy.score;
 
+	        if (maximizingPlayer) {
+	            if (currentScore > value) {
+	                value = currentScore; 
+	                bestStrategy = new ChessStrategy(move, value);
+	            }
+	            alpha = Math.max(alpha, value);
+	            if (value >= beta) {
+	                break; // Beta cutoff
+	            }
+	        } else {
+	            if (currentScore < value) {
+	                value = currentScore; // Minimize score
+	                bestStrategy = new ChessStrategy(move, value);
+	            }
+	            beta = Math.min(beta, value);
+	            if (value <= alpha) {
+	                break; // Alpha cutoff
+	            }
+	        }
+	    }
+
+	    if (bestStrategy == null) {
+	        System.err.println("No strategy was found!");
+	        return new ChessStrategy(null, maximizingPlayer ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY);
+	    }
+	  
+	    return bestStrategy;
 	}
+	
 }
 
 /**
@@ -120,10 +151,10 @@ public class AlphaBetaChessPlayer extends AbstractChessPlayer {
  */
 class ChessStrategy {
 	ChessMove move;
-	ChessGame game;
+	double score;
 
-	public ChessStrategy(ChessMove move, ChessGame game) {
+	public ChessStrategy(ChessMove move, double score) {
 		this.move = move;
-		this.game = game;
+		this.score = score;
 	}
 }

@@ -3,7 +3,6 @@ package inf101.chess.logic;
 import java.util.ArrayList;
 import java.util.List;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
@@ -12,26 +11,25 @@ import inf101.grid.Location;
 /**
  * Handles the logic of when a castling move should be added
  * to the King's legal moves. 
- * The validity of the move when in check is handled in Chess.java
+ * The validity of the move when in check is handled in the
+ * MoveCollectorAndVerifier
  */
 public class CastleRule {
-	boolean shortCastle;
 	King king;
 	IChessBoard board;
 	
 	public CastleRule(IChessBoard board, King king) {
-		// this.state = state;
 		this.king = king;
 		this.board = board;
 	}
 	
 	/**
 	 * Checks if the castling move is legal.
-	 * @return a list of locations for legal castles
+	 * @return a list of locations for legal castles (either size 0, 1 or 2)
 	 */
 	public List<Location> getLegalCastles() {
 		List<Location> legalCastles = new ArrayList<>();
-		if (isOnCorrectRow()) {
+		if (isOnCorrectRow() && !king.hasMoved() && !king.hasCastled()) {
 			int row = king.getLocation().row;
 			int kingCol = king.getLocation().col;
 			Location kingSideRookLoc = new Location(row, kingCol + 3);
@@ -63,12 +61,12 @@ public class CastleRule {
 	
 	/**
 	 * Helper method to check if the king is on the correct row for castling
-	 * (the back row)
+	 * (the starting row for each colour)
 	 * @return boolean indicating if this is the case
 	 */
 	private boolean isOnCorrectRow() {
 		if (king.getColour() == 'W') {
-			return (king.getLocation().row == board.numRows() -1) ? true : false;
+			return (king.getLocation().row == board.numRows() - 1) ? true : false;
 		}
 		else {
 			return (king.getLocation().row == 0) ? true : false;
@@ -76,8 +74,13 @@ public class CastleRule {
 	}
 	
 	/**
-	 * Helper method to check if all specific squares are empty
+	 * Helper method to check if all specific squares 
+	 * to castle through are empty
 	 * Looping logic: Credit to ChatGPT
+	 * @param row the row where the checking is to be done
+	 * @param startCol the first column to check
+	 * @param endCol the final column to check
+	 * @return boolean indicating if all the squares were empty or not
 	 */
 	private boolean squaresEmpty(int row, int startCol, int endCol) {
 		int step = startCol < endCol ? 1 : -1;
@@ -89,6 +92,14 @@ public class CastleRule {
 		return true;
 	}
 	
+	/**
+	 * Helper method to check if all squares to castle through
+	 * are safe (not attacked by enemy pieces)
+	 * @param row the row where the checking is to be done
+	 * @param startCol the first column to check
+	 * @param endCol the final column to check
+	 * @return boolean indicating if all the squares were safe or not
+	 */
 	private boolean squaresSafe(int row, int startCol, int endCol) {
 		int step = startCol < endCol ? 1 : -1;
 		// Check if the castling locations are attacked by any opposing pieces
@@ -110,20 +121,6 @@ public class CastleRule {
 			}
 		}
 		return true;
-	}
-	
-	/**
-	 * 
-	 * @return string representation depending on move
-	 */
-	@Override
-	public String toString() {
-		if (this.shortCastle) {
-			return "0-0";
-		}
-		else {
-			return "0-0-0";
-		}
 	}
 
 }

@@ -1,4 +1,4 @@
-package inf101.sem2.game;
+package inf101.chess.player;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,9 +8,8 @@ import static org.junit.jupiter.api.Assertions.fail;
 import org.junit.jupiter.api.BeforeEach;
 
 import inf101.GetStarted;
-import inf101.chess.main.player.AbstractPlayer;
-import inf101.chess.main.player.Player;
-import inf101.chess.player.ai.DumbPlayer;
+import inf101.chess.player.ai.DumbChessPlayer;
+
 
 import org.junit.jupiter.api.Test;
 
@@ -21,24 +20,24 @@ class PlayerTest {
 		assertTrue(GetStarted.hasRead);
 	}
 
-	public static void testConstructor(String symbol, String name, Player p) {
+	public static void testConstructor(String symbol, String name, ChessPlayer p) {
 		assertEquals(name, p.toString());
 		assertEquals(symbol, p.getSymbol());
 	}
 
 	@Test
 	void testisValidName() {
-		assertTrue(AbstractPlayer.isValidName("Martin"));
-		assertFalse(AbstractPlayer.isValidName(" "));
-		assertFalse(AbstractPlayer.isValidName("\n"));
-		assertFalse(AbstractPlayer.isValidName("\t"));
+		assertTrue(AbstractChessPlayer.isValidName("Martin"));
+		assertFalse(AbstractChessPlayer.isValidName(" "));
+		assertFalse(AbstractChessPlayer.isValidName("\n"));
+		assertFalse(AbstractChessPlayer.isValidName("\t"));
 	}
 
 	@Test
 	void testValidateName() {
 		testValidName("Martin");
 		try {
-			AbstractPlayer.validateName("");
+			AbstractChessPlayer.validateName("");
 		} catch (IllegalArgumentException e) {
 			return;
 		} catch (Exception e) {
@@ -48,7 +47,7 @@ class PlayerTest {
 
 	private void testValidName(String name) {
 		try {
-			assertEquals(name, AbstractPlayer.validateName(name));
+			assertEquals(name, AbstractChessPlayer.validateName(name));
 		} catch (Exception e) {
 			fail(name + " is not a vailld name.");
 		}
@@ -56,10 +55,10 @@ class PlayerTest {
 
 	@Test
 	void testConstruct() {
-		testConstruct(new DumbPlayer('X'));
+		testConstruct(new DumbChessPlayer('W'));
 	}
 
-	private void testConstruct(Player player) {
+	private void testConstruct(ChessPlayer player) {
 		testValidName(player.toString());
 
 	}

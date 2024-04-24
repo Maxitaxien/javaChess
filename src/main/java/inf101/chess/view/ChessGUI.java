@@ -19,6 +19,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import inf101.chess.model.ChessBoard;
+import inf101.chess.model.IChessBoard;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.chess.player.ChessGUIPlayer;
@@ -28,11 +29,8 @@ import inf101.grid.ChessMove;
 import inf101.grid.Location;
 
 /**
- * This class combines two buttons with a Clickable grid in one JFrame
- * The buttons are used to end or restart the game while the grid is used to
- * display the state of the game and for the user to select next move.
- *
- * @author Martin Vatshelle - martin.vatshelle@uib.no
+ * Adapted from GameGUI by Martin Vatshelle.
+ * The main addition is the getMove method. 
  */
 public class ChessGUI implements ActionListener, ChessGraphics {
 
@@ -137,13 +135,13 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	 * 
 	 * @return
 	 */
-	public ChessMove getMove(ChessBoard gameBoard) {
+	public ChessMove getMove(IChessBoard iChessBoard) {
 	    List<Location> selectedPanels = board.getSelectedPanels();
 	    if (selectedPanels.size() != 2)
 	        return null;
 	    Location from = selectedPanels.get(0);
 	    Location to = selectedPanels.get(1);
-	    Piece piece = gameBoard.get(from);
+	    Piece piece = iChessBoard.get(from);
 	    
 	    // If playing with another human, update the current player for the 
 	    // clickable panels as well, for move-showing purposes.
@@ -154,7 +152,7 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 	    // Create a different kind of move if castling is attempted
 	    if (piece instanceof King && Math.abs(from.col - to.col) > 1) {
 	        boolean kingside = to.col > from.col;
-	        Location rookFrom = new Location(from.row, kingside ? gameBoard.numColumns() - 1 : 0);
+	        Location rookFrom = new Location(from.row, kingside ? iChessBoard.numColumns() - 1 : 0);
 	        Location rookTo = new Location(to.row, kingside ? 5 : 3);
 	        return new ChessMove(from, to, piece, rookFrom, rookTo);
 	    } else {
@@ -176,7 +174,7 @@ public class ChessGUI implements ActionListener, ChessGraphics {
 		return Arrays.asList(colors);
 	}
 
-	public void display(ChessBoard gameBoard) {
+	public void display(IChessBoard gameBoard) {
 		removeClickablePanels();
 		this.board = new ClickableChessGrid(gameBoard, players, getColors());
 		frame.add("Center", this.board);

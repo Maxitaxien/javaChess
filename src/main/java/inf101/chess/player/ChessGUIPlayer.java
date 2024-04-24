@@ -2,11 +2,10 @@ package inf101.chess.player;
 
 import javax.swing.JOptionPane;
 
+import inf101.chess.logic.MoveCollectorAndVerifier;
 import inf101.chess.model.ChessGame;
-import inf101.chess.pieces.Piece;
 import inf101.chess.view.ChessGUI;
 import inf101.grid.ChessMove;
-import inf101.grid.Location;
 /**
  * This Player should be used if one wants input from GUI.
  * The game loop will stop when reaching an instance of GuiPlayer
@@ -16,12 +15,12 @@ import inf101.grid.Location;
  */
 public class ChessGUIPlayer extends AbstractChessPlayer {
 
-	public ChessGUIPlayer(char piece, String name) {
-		super(piece, name);
+	public ChessGUIPlayer(char symbol, String name) {
+		super(symbol, name);
 	}
 
-	public ChessGUIPlayer(char piece) {
-		super(piece, readPlayerName(piece));
+	public ChessGUIPlayer(char symbol) {
+		super(symbol, readPlayerName(symbol));
 	}
 
 	@Override
@@ -37,8 +36,9 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 
 	    while (true) {
 	        ChessMove move = gui.getMove(game.getGameBoard());
+	        MoveCollectorAndVerifier moveVerifier = new MoveCollectorAndVerifier(game.getGameBoard(), symbol);
 	        
-	        if (game.validMove(move)) {
+	        if (moveVerifier.validMove(move)) {
 	        	
 	            return move;
 	        }
@@ -59,9 +59,6 @@ public class ChessGUIPlayer extends AbstractChessPlayer {
 	    }
 	}
 	
-	private boolean hasValidMove(ChessGame game, ChessMove move) {
-		return game.validMove(move);
-	}
 
 	/**
 	 * Asks player to type in name in a GUI pop up

@@ -2,14 +2,12 @@
 TODO: 
 
 08.04: Created board and basic outline of game.
-TODO: Method to flip board?
+TODO: Method to flip board? - Scratch that, too much effort.
 
 09.04:
-TODO: Find out where logic for calculating legal moves should be done. We need positions of all pieces to do this.
 
 10. 04: Added some pieces without functionality, created ChessMoveGame to adapt MultiMoveGame
-TODO: Maybe make multimovegame abstract so that it also works with ChessMove
-Allow player to start with white or black.
+TODO: Allow player to start with white or black.
 
 11.04:
 The AbstractPlayer currently only allows for one symbol - corresponding to the player.
@@ -21,4 +19,4 @@ TODO: Choose and commit to one choice - are positions handled in pieces or board
 TODO: Make restart button work
 
 16.04:
-TODO: Make castling work.
+TODO: 

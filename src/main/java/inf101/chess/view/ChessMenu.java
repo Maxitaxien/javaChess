@@ -14,25 +14,25 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import inf101.chess.main.Chess;
 import inf101.chess.model.GameState;
 import inf101.chess.player.ChessGUIPlayer;
 import inf101.chess.player.ChessPlayerList;
 import inf101.chess.player.GameEndedException;
 import inf101.chess.player.RestartException;
 import inf101.chess.player.ai.AlphaBetaChessPlayer;
-import inf101.chess.player.ai.DumbChessPlayer;
-import inf101.chess.player.ai.RandomChessPlayer;
-import inf101.sem2.game.games.Chess;
+
 
 /**
  * This class represents a main menu with settings and an option
  * to start the game of chess.
  * 
- * Adapted from MainMenu by Martin Vatshelle.
+ * Adapted from MainMenu by Martin Vatshelle with changes to account
+ * for chess.
  */
 public class ChessMenu implements ActionListener {
 	private final JButton startButton; 
-	private final JButton settingsButton; 
+	// private final JButton settingsButton; 
 	private final JFrame frame;
 	public Chess game;
 	public ChessGUI gui;
@@ -49,7 +49,7 @@ public class ChessMenu implements ActionListener {
 		buttons.setBorder(new EmptyBorder(10, 10, 30, 10));
 
 		startButton = addButton(buttons, "Start Game");
-		settingsButton = addButton(buttons, "Settings");
+		// settingsButton = addButton(buttons, "Settings");
 
 		// add buttons to the window
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,7 +79,6 @@ public class ChessMenu implements ActionListener {
 
 	// this method is inherited from ActionListener and is the method
 	// that gets called when buttons are clicked.
-	// TODO: Add settings button below chess button
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (game != null) {
@@ -96,8 +95,6 @@ public class ChessMenu implements ActionListener {
 		
 		if (e.getSource() == startButton) {
 			game = new Chess(graphics, initialState, players);
-			// TODO:
-			// GridVisualiser moveVisualiser = new ChessMoveVisualiser(game, gui);
 		}
 		if (game == null) {
 			System.err.println("Button not recognized, no game created.");
@@ -124,10 +121,10 @@ public class ChessMenu implements ActionListener {
 		if (promptMultiplayer()) {
 			players.add(new ChessGUIPlayer(s2));
 		} else {
-			players.add(new RandomChessPlayer(s2));
 			// make AI
-			// int intelligence = promptIntelligence();
-			// players.add(new AlphaBetaChessPlayer(s2, intelligence));
+			int intelligence = promptIntelligence();
+			players.add(new AlphaBetaChessPlayer(s2, intelligence));
+			//players.add(new DumbChessPlayer(s2));
 		}
 		return players;
 	}
@@ -135,7 +132,7 @@ public class ChessMenu implements ActionListener {
 	/**
 	 * Prompts player for level of intelligence in AI player
 	 * Credit: ChatGPT
-	 * @return the selected intelligence level (an integer between 1 and 8)
+	 * @return the selected intelligence level (an integer between 1 and 5)
 	 */
 	private static int promptIntelligence() {
 	    String userInput;
@@ -144,27 +141,28 @@ public class ChessMenu implements ActionListener {
 	    do {
 	        userInput = JOptionPane.showInputDialog(
 	                null,
-	                "Select the intelligence level of the AI (1-8):",
+	                "Select the intelligence level of the AI (1-5).\n "
+	                + "(3 recommended - higher levels are very slow)",
 	                "AI Intelligence Level",
 	                JOptionPane.PLAIN_MESSAGE);
 
 	        try {
 	            intelligenceLevel = Integer.parseInt(userInput);
-	            if (intelligenceLevel < 1 || intelligenceLevel > 8) {
+	            if (intelligenceLevel < 1 || intelligenceLevel > 5) {
 	                JOptionPane.showMessageDialog(
 	                        null,
-	                        "Please enter a number between 1 and 8.",
+	                        "Please enter a number between 1 and 5.",
 	                        "Invalid Input",
 	                        JOptionPane.ERROR_MESSAGE);
 	            }
 	        } catch (NumberFormatException e) {
 	            JOptionPane.showMessageDialog(
 	                    null,
-	                    "Please enter a valid integer between 1 and 8.",
+	                    "Please enter a valid integer between 1 and 5.",
 	                    "Invalid Input",
 	                    JOptionPane.ERROR_MESSAGE);
 	        }
-	    } while (intelligenceLevel < 1 || intelligenceLevel > 8);
+	    } while (intelligenceLevel < 1 || intelligenceLevel > 5);
 
 	    return intelligenceLevel;
 	}

@@ -13,13 +13,16 @@ import javax.swing.JPanel;
 import inf101.chess.pieces.Piece;
 
 /**
- * A class for clickable panels
- * This is basically a Button with some special design that changes.
- * When this panel is clicked a call to the MouseListener will be made
- * which then changes the color.
- *
- * @author Anna Eilertsen - anna.eilertsen@uib.no
- * @author Martin Vatshelle - martin.vatshelle@uib.no
+ * Adapted from GamePanel by:
+ * Anna Eilertsen - anna.eilertsen@uib.no
+ * Martin Vatshelle - martin.vatshelle@uib.no
+ * 
+ * So that it can hold pieces.
+ * Each GamePanel draws the relevant piece on the tile
+ * if a piece is present there.
+ * Also, it draws a little grey square if the move is one of the possible moves
+ * of a selected piece.
+ * 
  */
 public class GamePanel extends JPanel {
 
@@ -113,22 +116,35 @@ public class GamePanel extends JPanel {
 	}
 	
 	/**
-	 * TODO: Draws small circles on the panels indicating legal moves
-	 * @return
+	 * Sets the square as a possible move,
+	 * which in turn
+	 * @param possibleMove true or false depending on if we are turning on or off the square
 	 */
 	public void setPossibleMove(boolean possibleMove) {
 		this.possibleMove = possibleMove;
 	}
 
+	/**
+	 * Indicates if the square is selected by a ChessGUIPlayer
+	 * @return boolean indicating if it is selected or not
+	 */
 	public boolean isSelected() {
 		return isSelected;
 	}
 	
+	/**
+	 * Updates the piece currently contained in this gamepanel.
+	 * @param piece the new piece to draw
+	 */
 	public void setPiece(Piece piece) {
         this.pieceToDraw = piece;  
         repaint(); 
     }
 	
+	/**
+	 * Returns the piece currently contained in the GamePanel
+	 * @return
+	 */
 	public Piece getPiece() {
 		return this.pieceToDraw;
 	}

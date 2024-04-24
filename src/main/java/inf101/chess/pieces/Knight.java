@@ -3,7 +3,6 @@ package inf101.chess.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
 
@@ -11,6 +10,20 @@ public class Knight extends Piece {
 
 	public Knight(char colour, Location loc) {
 		super(colour, 'N', loc);
+	}
+	
+	@Override
+	public int getValue() {
+		return 3;
+	}
+	
+	@Override
+	public Knight copy() {
+		Knight newKnight = new Knight(this.getColour(), this.getLocation());
+		if (hasMoved()) {
+			newKnight.moved();
+		}
+		return newKnight;
 	}
 
 	@Override
@@ -42,18 +55,4 @@ public class Knight extends Piece {
 		}
 		return legalMoves;
 	}
-
-	@Override
-	public void moved() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean hasMoved() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-
 }

@@ -2,10 +2,10 @@ package inf101.chess.player;
 
 import inf101.chess.model.ChessGame;
 import inf101.grid.ChessMove;
-import inf101.grid.Location;
-import inf101.grid.Move;
 
 /**
+ * Interface created by Martin Vatshelle:
+ * 
  * Players has only one method that is specific to the game they play.
  * namely getMove(), this method contains the logic of the player.
  * There are normally differences in how a player chooses a move, e.g.
@@ -22,9 +22,6 @@ public interface ChessPlayer {
 
 	/**
 	 * The char symbol unique to each Player to use when printing the GameBoard.
-	 * The return type is String to allow for EMOJIs but should only be 1 character.
-	 * TODO: this only works for certain font types so make sure monospace font is
-	 * used.
 	 *
 	 * @return a 1 character symbol unique to each player
 	 */
@@ -36,8 +33,8 @@ public interface ChessPlayer {
 	 * If the player returns an illegal move the rules of the game decides if the
 	 * player will loose his turn or get to retry
 	 *
-	 * @param game - The grid based game in which the move is to be made.
-	 * @return a move describing what locations the player should traverse
+	 * @param board the board the move is being made on
+	 * @return a chess move describing what locations the player should traverse
 	 */
 	ChessMove getMove(ChessGame board);
 

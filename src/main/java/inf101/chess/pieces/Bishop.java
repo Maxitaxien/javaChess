@@ -10,23 +10,28 @@ public class Bishop extends Piece{
 	public Bishop(char colour, Location loc) {
 		super(colour, 'B', loc);
 	}
-
+	
+	@Override
+		public int getValue() {
+			return 3;
+		}
+	
+	@Override
+	public Bishop copy() {
+		Bishop newBishop = new Bishop(this.getColour(), this.getLocation());
+		if (hasMoved()) {
+			newBishop.moved();
+		}
+		return newBishop;
+	}
+	
 	@Override
 	public List<Location> getPossibleMoves(IChessBoard board) {
 		DirectionalCalculator calculator = new DirectionalCalculator();
 		return calculator.calculateDiagonal(getLocation(), board, getColour());
 	}
 
-	@Override
-	public void moved() {
-		// TODO Auto-generated method stub
-		
-	}
 
-	@Override
-	public boolean hasMoved() {
-		// TODO Auto-generated method stub
-		return false;
-	}
+	
 
 }

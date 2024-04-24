@@ -3,32 +3,27 @@ package inf101.chess.pieces;
 import java.util.ArrayList;
 import java.util.List;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
 
-public class Pawn extends Piece {
-	private boolean hasMoved = false;
-	// Used to check if the pawn has just moved two squares - then it can be taken en passant
-	private boolean canEnPassant = false;
-	
+public class Pawn extends Piece {	
 	public Pawn(char colour, Location loc) {
 		super(colour, 'P', loc);
 	}	
 	
-	/**
-	 * Indicates if the pawn has moved. Relevant
-	 * as the pawn can only move two squares forwards
-	 * on it's first move.
-	 * 
-	 * @return true if piece has moved else false
-	 */
-	public boolean hasMoved() {
-		return hasMoved;
+
+	@Override
+	public int getValue() {
+		return 1;
 	}
 	
-	public void moved() {
-		hasMoved = true;
+	@Override
+	public Pawn copy() {
+		Pawn newPawn = new Pawn(this.getColour(), this.getLocation());
+		if (hasMoved()) {
+			newPawn.moved();
+		}
+		return newPawn;
 	}
 
 	@Override
@@ -59,8 +54,10 @@ public class Pawn extends Piece {
 		}
 		
 		newLoc = new Location(currentRow + direction*2, currentCol);
+		Location squareBetween = new Location(currentRow + direction, currentCol);
 		// Initial move
-		if (!hasMoved() && board.isOnBoard(newLoc) && board.squareEmpty(newLoc)) {
+		if (!hasMoved() && board.isOnBoard(newLoc) && 
+				board.squareEmpty(newLoc) && board.squareEmpty(squareBetween)) {
 			possibleMoves.add(new Location(currentRow + direction*2, currentCol));
 		}
 		

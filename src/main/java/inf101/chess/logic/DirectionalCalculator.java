@@ -3,7 +3,6 @@ package inf101.chess.logic;
 import java.util.ArrayList;
 import java.util.List;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.grid.Location;
 
@@ -16,6 +15,7 @@ public class DirectionalCalculator {
 	 * Calculates moves in the cardinal (up, down, left, right) directions
 	 * @param loc the location of the piece
 	 * @param board the board to place on, where the size of the board is relevant
+	 * @param pieceColour the colour of the piece to calculate for
 	 * @return a list of locations in the cardinal directions
 	 */
 	public List<Location> calculateCardinal(Location loc, IChessBoard board, char pieceColour) {
@@ -66,6 +66,7 @@ public class DirectionalCalculator {
 	 * Calculates moves in the diagonal (down right, up left, up right, down left) directions
 	 * @param loc the location of the piece
 	 * @param board the board to place on, where the size of the board is relevant
+	 * @param pieceColour the colour of the piece to calculate for
 	 * @return a list of locations in the diagonal directions
 	 */
 	public List<Location> calculateDiagonal(Location loc, IChessBoard board, char pieceColour) {
@@ -108,8 +109,13 @@ public class DirectionalCalculator {
 	}
 	
 	/**
-	 * Adds the move, returns false
+	 * Adds the move, then returns false
 	 * when the loop should be stopped.
+	 * @param move the move to add
+	 * @param board the board to check
+	 * @param pieceColour the colour of the current piece to move
+	 * @param moveList the moves to check
+	 * @return boolean false if an opponent is found, true otherwise (to continue adding moves)
 	 */
 	private boolean addMove(Location move, IChessBoard board, char pieceColour, List<Location> moveList) {
         if (!(board.squareEmpty(move))) {

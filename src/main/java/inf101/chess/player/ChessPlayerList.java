@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
+ * Class created by Martin Vatshelle:
+ * 
  * This class keep track of players and who's turn it is.
  * In this project that might be overkill since there are only 2 players.
  * But I think the code becomes more readable when we have a PlayerList class

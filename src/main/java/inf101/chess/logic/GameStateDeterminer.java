@@ -34,7 +34,7 @@ public class GameStateDeterminer {
 	}
 	
 	public boolean kingInDangerAfterMove(ChessMove move) {
-		IChessBoard testBoard = board.copy(true);
+		IChessBoard testBoard = board.copy();
 		testBoard.movePiece(move.getFrom(), move.getTo());
 
 		
@@ -42,7 +42,7 @@ public class GameStateDeterminer {
 
 		for (Location loc: testBoard.locations()) {
 			Piece piece = testBoard.get(loc);
-			if (piece != null) {
+			if (piece != null && piece.getLocation() != kingLoc) {
 				if (piece.getColour() != currentPlayerSymbol) {
 					List<Location> pieceMoves = piece.getPossibleMoves(testBoard);
 					if (pieceMoves.contains(kingLoc)) {
@@ -54,11 +54,17 @@ public class GameStateDeterminer {
 		return false;
 	}
 	
-	
-	private Location findKing(IChessBoard boardToCheck, char playerSymbol) {
-	    for (Location loc: boardToCheck.locations()) {
-	        Piece piece = boardToCheck.get(loc);
-	        if (piece != null && piece.getColour() == playerSymbol && piece.getSymbol() == 'K') {
+	/**
+	 * Helper method to find the current player's king.
+	 * @param boardToCheck the board to look for the king on
+	 * @param playerSymbol the current player colour
+	 * @return location of the found king
+	 */
+	private Location findKing(IChessBoard board, char currentPlayerSymbol) {
+	    for (Location loc: board.locations()) {
+	        Piece piece = board.get(loc);
+	        if (piece != null && piece.getColour() == currentPlayerSymbol
+	        		&& piece.getSymbol() == 'K') {
 	            return loc;
 	        }
 	    }

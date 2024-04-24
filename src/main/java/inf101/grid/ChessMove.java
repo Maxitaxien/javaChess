@@ -4,6 +4,9 @@ import java.util.Iterator;
 
 import inf101.chess.pieces.Piece;
 
+/**
+ * Extends the move class to work with chess
+ */
 public class ChessMove extends Move {
 	private Piece piece;
 	private boolean capture; // Indicates if the move is a capture
@@ -43,7 +46,7 @@ public class ChessMove extends Move {
 	
 	/**
 	 * Indicates if the move is a castle.
-	 * @return
+	 * @return boolean indicating if the move is a castle
 	 */
 	public boolean isCastle() {
 		return castle;
@@ -58,7 +61,7 @@ public class ChessMove extends Move {
 	
 	/**
 	 * Indicates if the move captures another piece.
-	 * @return boolean
+	 * @return boolean indicating if the move is a capture
 	 */
 	public boolean isCapture() {
 		return capture;
@@ -80,7 +83,10 @@ public class ChessMove extends Move {
 		return rookTo;
 	}
 	
-	// Slightly edited from the Move toString() method
+	/**
+	 *  Slightly edited from the Move toString() method
+	 *  to account for captures/checks
+	 */
 	@Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
