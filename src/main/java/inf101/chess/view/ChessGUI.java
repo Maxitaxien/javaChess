@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.awt.event.WindowAdapter;
 
 import java.util.Arrays;
@@ -15,15 +14,12 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import inf101.chess.model.ChessBoard;
 import inf101.chess.model.IChessBoard;
 import inf101.chess.pieces.King;
 import inf101.chess.pieces.Piece;
 import inf101.chess.player.ChessGUIPlayer;
-import inf101.chess.player.ChessPlayer;
 import inf101.chess.player.ChessPlayerList;
 import inf101.grid.ChessMove;
 import inf101.grid.Location;

@@ -1,7 +1,6 @@
 package inf101.grid;
 
 
-import java.util.HashMap;
 import java.util.Map;
 
 import inf101.chess.pieces.Piece;

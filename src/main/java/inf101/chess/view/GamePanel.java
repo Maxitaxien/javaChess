@@ -85,20 +85,20 @@ public class GamePanel extends JPanel {
 	}
 
 	
-		// Partial credit to ChatGPT
-		// For loading methods and exception catching
-		private Image loadImage(char colour, char symbol) {
-			try {
-				String loadingString = String.format("/chess/assets/%c%c.png", colour, symbol);
-				ImageIcon icon = new ImageIcon(getClass().getResource(loadingString));
-				Image pieceImage = icon.getImage();
-				return pieceImage;
-			} catch (Exception e) {
-				e.printStackTrace();
-				System.out.println("Error loading image. Check file path.");
-				return null;
-			}
+	// Partial credit to ChatGPT
+	// For loading methods and exception catching
+	private Image loadImage(char colour, char symbol) {
+		try {
+			String loadingString = String.format("/chess/assets/%c%c.png", colour, symbol);
+			ImageIcon icon = new ImageIcon(getClass().getResource(loadingString));
+			Image pieceImage = icon.getImage();
+			return pieceImage;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("Error loading image. Check file path.");
+			return null;
 		}
+	}
 
 	/**
 	 * Sets the color of this panel.

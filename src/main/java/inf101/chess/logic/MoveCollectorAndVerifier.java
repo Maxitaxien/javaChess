@@ -44,6 +44,7 @@ public class MoveCollectorAndVerifier {
 	    }
 
 
+	    // Final check to see if the legal moves contain the move being tested
 	    return board.get(move.getFrom()).getPossibleMoves(board).contains(move.getTo());
 	}
 	

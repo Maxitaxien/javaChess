@@ -41,7 +41,7 @@ public class PositionScoring {
         // The AI should greatly value piece values with less emphasis on the other factors
         double valueWeight = 5.2;
         double movesWeight = 1.1;
-        double centerWeight = 2.1;
+        double centerWeight = 1.9;
 
         return valueDifference * valueWeight + currentPlayerMoves * movesWeight + centerControl * centerWeight;
     }
